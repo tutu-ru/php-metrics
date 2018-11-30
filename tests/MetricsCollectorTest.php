@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Metrics\SessionNames;
+use TutuRu\Tests\Metrics\MetricsCollector\BrokenMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\ExporterMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\CustomMetricsCollector;
@@ -23,7 +24,8 @@ class MetricsCollectorTest extends BaseTest
         $collector->endTiming();
         $this->assertNull($session->getLastCreatedConnection());
 
-        $collector->save();
+        $result = $collector->save();
+        $this->assertTrue($result);
         $this->assertCount(0, $session->getLastCreatedConnection()->getMessages());
 
         $metrics->send();
@@ -45,7 +47,9 @@ class MetricsCollectorTest extends BaseTest
         $collector->setMetrics($metrics);
 
         $collector->endTiming();
-        $collector->save();
+        $result = $collector->save();
+        $this->assertTrue($result);
+
         $metrics->send();
         $this->assertCount(0, $session->getLastCreatedConnection()->getMessages());
     }
@@ -61,7 +65,9 @@ class MetricsCollectorTest extends BaseTest
         $collector->setMetrics($metrics);
 
         $collector->addTiming(500);
-        $collector->save();
+        $result = $collector->save();
+        $this->assertTrue($result);
+
         $metrics->send();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
@@ -80,7 +86,9 @@ class MetricsCollectorTest extends BaseTest
         $collector->setMetrics($metrics);
 
         $collector->addTiming(500);
-        $collector->save();
+        $result = $collector->save();
+        $this->assertTrue($result);
+
         $metrics->send();
         $this->assertCount(2, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
@@ -106,7 +114,9 @@ class MetricsCollectorTest extends BaseTest
         $collector->setMetrics($metrics);
 
         $collector->addTiming(500);
-        $collector->save();
+        $result = $collector->save();
+        $this->assertTrue($result);
+
         $metrics->send();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
@@ -118,5 +128,14 @@ class MetricsCollectorTest extends BaseTest
             'test.exporter:500000|ms|#app:unknown',
             $sessionExporter->getLastCreatedConnection()->getMessages()[0]
         );
+    }
+
+    public function testFailedSave()
+    {
+        $metrics = $this->getMemoryMetrics();
+        $collector = new BrokenMetricsCollector();
+        $collector->setMetrics($metrics);
+        $result = $collector->save();
+        $this->assertFalse($result);
     }
 }

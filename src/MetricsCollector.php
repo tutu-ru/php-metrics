@@ -85,8 +85,9 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
         return null;
     }
 
-    public function save()
+    public function save(): bool
     {
+        $result = true;
         try {
             if (!is_null($this->getTiming())) {
                 $this->sendTimersToStatsdSessions();
@@ -94,10 +95,12 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
             }
             $this->saveCustomMetrics();
         } catch (\Throwable $e) {
+            $result = false;
             if (!is_null($this->logger)) {
                 $this->logger->error("{$e->getMessage()}");
             }
         }
+        return $result;
     }
 
     /**
