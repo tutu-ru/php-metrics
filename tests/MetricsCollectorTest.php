@@ -127,7 +127,7 @@ class MetricsCollectorTest extends BaseTest
         );
         $this->assertCount(1, $sessionExporter->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
-            'test.exporter:500000|ms|#app:unknown',
+            'test.exporter:500000|ms|#env:test,app:unknown',
             $sessionExporter->getLastCreatedConnection()->getMessages()[0]
         );
     }

@@ -10,6 +10,7 @@ class ExporterMetricsCollector extends MetricsCollector
     public function __construct()
     {
         $this->setStatsdExporterTimersMetricName('exporter');
+        $this->setStatsdExporterTimersTags(['env' => 'test']);
     }
 
     protected function saveCustomMetrics(): void
