@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use RM\StatsD\Session\NullSession;
 use TutuRu\Metrics\SessionNames;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\ExporterMetricsCollector;
@@ -127,6 +129,32 @@ class MetricsCollectorTest extends BaseTest
         $this->assertEquals(
             'test.exporter:500000|ms|#app:unknown',
             $sessionExporter->getLastCreatedConnection()->getMessages()[0]
+        );
+    }
+
+    public function testStatsdExporterWithBrokenConfig()
+    {
+        $this->config->setApplicationConfig(new TestConfig(__DIR__ . '/config/without_exporter.json'));
+
+        $metrics = $this->getMemoryMetrics();
+        /** @var MemoryMetricsSession $session */
+        $session = $metrics->getSession(SessionNames::NAME_WORK);
+        /** @var NullSession|MockObject $nullSession */
+        $nullSession = $metrics->getNullSession();
+        $nullSession->expects($this->exactly(1))->method('timing');
+
+        $collector = new ExporterMetricsCollector();
+        $collector->setMetrics($metrics);
+
+        $collector->addTiming(500);
+        $result = $collector->save();
+        $this->assertTrue($result);
+
+        $metrics->send();
+        $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
+        $this->assertEquals(
+            'simple.metrics.collector:500000|ms',
+            $session->getLastCreatedConnection()->getMessages()[0]
         );
     }
 

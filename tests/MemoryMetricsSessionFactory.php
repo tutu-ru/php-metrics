@@ -6,11 +6,12 @@ namespace TutuRu\Tests\Metrics;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TutuRu\Metrics\MetricsConfig;
+use TutuRu\Metrics\MetricsSession\MetricsSessionFactoryInterface;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
-use TutuRu\Metrics\MetricsSession\UdpMetricsSessionFactory;
+use TutuRu\Metrics\MetricsSession\NullMetricsSession;
 use TutuRu\Metrics\SessionParams;
 
-class MemoryMetricsSessionFactory extends UdpMetricsSessionFactory
+class MemoryMetricsSessionFactory implements MetricsSessionFactoryInterface
 {
     private $testCase;
 
@@ -33,6 +34,21 @@ class MemoryMetricsSessionFactory extends UdpMetricsSessionFactory
                 ->getMock();
         } else {
             return new MemoryMetricsSession($config, $params);
+        }
+    }
+
+
+    /**
+     * @return NullMetricsSession|MockObject
+     */
+    public function createNullSession(): MetricsSessionInterface
+    {
+        if (!is_null($this->testCase)) {
+            return $this->testCase->getMockBuilder(NullMetricsSession::class)
+                ->enableProxyingToOriginalMethods()
+                ->getMock();
+        } else {
+            return new NullMetricsSession();
         }
     }
 }

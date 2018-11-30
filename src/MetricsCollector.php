@@ -180,6 +180,6 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
      */
     private function getStatsdExporterSession(): MetricsSessionInterface
     {
-        return $this->getMetrics()->getRequestedSessionOrDefault(SessionNames::NAME_STATSD_EXPORTER);
+        return $this->getMetrics()->getRequestedSessionOrNull(SessionNames::NAME_STATSD_EXPORTER);
     }
 }

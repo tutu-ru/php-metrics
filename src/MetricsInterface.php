@@ -19,6 +19,8 @@ interface MetricsInterface
 
     public function getRequestedSessionOrDefault(string $name): MetricsSessionInterface;
 
+    public function getRequestedSessionOrNull(string $name): MetricsSessionInterface;
+
     /**
      * @return MetricsSessionInterface[]
      */

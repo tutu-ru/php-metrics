@@ -67,14 +67,13 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
             if (!is_null($this->logger)) {
                 $this->logger->error("session {$name} is not defined. using default");
             }
-            return $this->getDefaultSessionOrNull();
+            return $this->getRequestedSessionOrNull(SessionNames::NAME_DEFAULT);
         }
     }
 
 
-    private function getDefaultSessionOrNull()
+    public function getRequestedSessionOrNull(string $name): MetricsSessionInterface
     {
-        $name = SessionNames::NAME_DEFAULT;
         try {
             return $this->getSession($name);
         } catch (UnknownSessionException $e) {
