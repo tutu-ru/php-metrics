@@ -14,7 +14,7 @@ class SessionParams
     /** @var string */
     private $namespace;
 
-    /** @var int */
+    /** @var float */
     private $timeoutInSec;
 
     /** @var bool */
@@ -23,17 +23,14 @@ class SessionParams
     /** @var bool */
     private $isExporter;
 
-    /**
-     * SessionParams constructor.
-     * @param      $host
-     * @param      $port
-     * @param      $namespace
-     * @param      $timeoutInSec
-     * @param      $isSessionEnabled
-     * @param bool $isStatsdExporter
-     */
-    public function __construct($host, $port, $namespace, $timeoutInSec, $isSessionEnabled, bool $isStatsdExporter)
-    {
+    public function __construct(
+        string $host,
+        int $port,
+        ?string $namespace,
+        float $timeoutInSec,
+        ?bool $isSessionEnabled,
+        bool $isStatsdExporter
+    ) {
         $this->host = $host;
         $this->port = $port;
         $this->namespace = $namespace;
@@ -42,38 +39,22 @@ class SessionParams
         $this->isExporter = $isStatsdExporter;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getNamespace()
+    public function getNamespace(): ?string
     {
         return $this->namespace;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getTimeoutInSec()
+    public function getTimeoutInSec(): float
     {
         return $this->timeoutInSec;
     }

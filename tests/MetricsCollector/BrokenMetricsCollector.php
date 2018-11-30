@@ -7,12 +7,12 @@ use TutuRu\Metrics\MetricsCollector;
 
 class BrokenMetricsCollector extends MetricsCollector
 {
-    protected function saveCustomMetrics()
+    protected function saveCustomMetrics(): void
     {
         throw new \Exception();
     }
 
-    protected function getTimingKey()
+    protected function getTimingKey(): string
     {
         return $this->glueNamespaces(['simple', 'metrics', 'broken']);
     }

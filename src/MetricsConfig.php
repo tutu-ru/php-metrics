@@ -35,25 +35,29 @@ class MetricsConfig
         $this->config = $config;
     }
 
-    /**
-     * @param string $sessionName
-     * @return SessionParams|null
-     */
+
     public function getSessionParameters(string $sessionName): ?SessionParams
     {
         if (is_null($this->config->getValue('statsd.sessions.' . $sessionName))) {
             return null;
         }
 
-        return new SessionParams(
-            $this->config->getValue('statsd.sessions.' . $sessionName . '.host', '', true),
-            (int)$this->config->getValue('statsd.sessions.' . $sessionName . '.port', 8125),
-            $this->config->getValue('statsd.sessions.' . $sessionName . '.namespace', null),
-            (float)$this->config->getValue('statsd.sessions.' . $sessionName . '.timeout', 0),
-            $this->config->getValue('statsd.sessions.' . $sessionName . '.enabled', null),
-            (bool)$this->config->getValue('statsd.sessions.' . $sessionName . '.is_statsd_exporter', 0)
-        );
+        $host = $this->config->getValue('statsd.sessions.' . $sessionName . '.host', '', true);
+        $port = (int)$this->config->getValue('statsd.sessions.' . $sessionName . '.port', 8125);
+        $ns = $this->config->getValue('statsd.sessions.' . $sessionName . '.namespace', null);
+        if (!is_null($ns)) {
+            $ns = (string)$ns;
+        }
+        $timeout = (float)$this->config->getValue('statsd.sessions.' . $sessionName . '.timeout', 0);
+        $enabled = $this->config->getValue('statsd.sessions.' . $sessionName . '.enabled', null);
+        if (!is_null($enabled)) {
+            $enabled = (bool)$enabled;
+        }
+        $isExporter = (bool)$this->config->getValue('statsd.sessions.' . $sessionName . '.is_statsd_exporter', 0);
+
+        return new SessionParams($host, $port, $ns, $timeout, $enabled, $isExporter);
     }
+
 
     public function isEnabled(): bool
     {
@@ -66,18 +70,19 @@ class MetricsConfig
         return (bool)$this->config->getValue('statsd.replace_dot_in_hostname', true);
     }
 
-    /*
-     * пока предполагается, что для проектов будет false, для сервисов - true
-     */
+
     public function prependHostnameFromApp(): bool
     {
+        // пока предполагается, что для проектов будет false, для сервисов - true
         return (bool)$this->config->getApplicationValue('statsd.prepend_hostname', false);
     }
 
+
     public function getAppName(): string
     {
-        return (string)($this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown');
+        return $this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown';
     }
+
 
     public function getServerHostname(): string
     {

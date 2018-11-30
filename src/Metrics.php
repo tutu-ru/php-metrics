@@ -53,7 +53,7 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
             if (is_null($sessionParameters)) {
                 throw new UnknownSessionException("Unknown session '$name'");
             }
-            $this->sessions[$name] = $this->createSession($sessionParameters);
+            $this->sessions[$name] = $this->sessionFactory->createSession($sessionParameters, $this->config);
         }
         return $this->sessions[$name];
     }
@@ -94,12 +94,6 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
     }
 
 
-    protected function createSession(SessionParams $sessionParameters)
-    {
-        return $this->sessionFactory->createSession($sessionParameters, $this->config);
-    }
-
-
     /**
      * @return MetricsSessionInterface[]
      */
@@ -109,7 +103,7 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
     }
 
 
-    public function send()
+    public function send(): void
     {
         foreach ($this->getAllSessions() as $session) {
             $session->send();

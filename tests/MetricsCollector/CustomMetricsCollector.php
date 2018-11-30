@@ -7,12 +7,12 @@ use TutuRu\Metrics\MetricsCollector;
 
 class CustomMetricsCollector extends MetricsCollector
 {
-    protected function saveCustomMetrics()
+    protected function saveCustomMetrics(): void
     {
         $this->getSession()->gauge($this->glueNamespaces(['simple', 'metrics', 'custom']), 50);
     }
 
-    protected function getTimingKey()
+    protected function getTimingKey(): string
     {
         return $this->glueNamespaces(['simple', 'metrics', 'collector']);
     }

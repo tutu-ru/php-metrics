@@ -12,11 +12,11 @@ class ExporterMetricsCollector extends MetricsCollector
         $this->setStatsdExporterTimersMetricName('exporter');
     }
 
-    protected function saveCustomMetrics()
+    protected function saveCustomMetrics(): void
     {
     }
 
-    protected function getTimingKey()
+    protected function getTimingKey(): string
     {
         return $this->glueNamespaces(['simple', 'metrics', 'collector']);
     }

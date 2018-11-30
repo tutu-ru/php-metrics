@@ -5,41 +5,28 @@ namespace TutuRu\Metrics;
 
 class MetricBuilder
 {
-    const NAMESPACE_SEPARATOR = '.';
-    const NAMESPACE_DOT_REPLACER = '_';
+    public const METRIC_TYPE_TIMERS = 'timers';
+    public const METRIC_TYPE_GAUGES = 'gauges';
+    public const METRIC_TYPE_COUNTERS = 'counters';
 
-    const METRIC_TYPE_TIMERS = 'timers';
-    const METRIC_TYPE_GAUGES = 'gauges';
-    const METRIC_TYPE_COUNTERS = 'counters';
+    private const NAMESPACE_SEPARATOR = '.';
+    private const NAMESPACE_DOT_REPLACER = '_';
 
     /** @var MetricsConfig */
     private $config;
+
+    private $metricsType2PrefixMapping = [
+        self::METRIC_TYPE_TIMERS   => self::METRIC_TYPE_TIMERS,
+        self::METRIC_TYPE_GAUGES   => self::METRIC_TYPE_GAUGES,
+        self::METRIC_TYPE_COUNTERS => self::METRIC_TYPE_COUNTERS,
+    ];
 
     public function __construct(MetricsConfig $config)
     {
         $this->config = $config;
     }
 
-    private function metricsType2PrefixMapping($metricType)
-    {
-        $_metricsType2PrefixMapping = [
-            self::METRIC_TYPE_TIMERS   => self::METRIC_TYPE_TIMERS,
-            self::METRIC_TYPE_GAUGES   => self::METRIC_TYPE_GAUGES,
-            self::METRIC_TYPE_COUNTERS => self::METRIC_TYPE_COUNTERS,
-        ];
-
-        return array_key_exists($metricType, $_metricsType2PrefixMapping) ?
-            $_metricsType2PrefixMapping[$metricType] :
-            null;
-    }
-
-    /**
-     * @param      $keyFromApp
-     * @param null $metricsType
-     * @param bool $isStatsdExporter
-     * @return string
-     */
-    public function prepareKey($keyFromApp, $metricsType = null, bool $isStatsdExporter = false)
+    public function prepareKey(string $keyFromApp, ?string $metricsType = null, bool $isStatsdExporter = false): string
     {
         if ($this->config->prependHostnameFromApp() && !$isStatsdExporter) {
             $parts = [$this->getPreparedHostname()];
@@ -57,28 +44,26 @@ class MetricBuilder
 
     public function prepareTags(array $tags): array
     {
-        $parts['app'] = $this->config->getAppName();
-        return array_merge($tags, $parts);
+        return array_merge($tags, ['app' => $this->config->getAppName()]);
     }
 
-    /**
-     * @return string
-     */
-    private function getPreparedHostname()
+    private function metricsType2PrefixMapping(?string $metricType): ?string
+    {
+        return $this->metricsType2PrefixMapping[$metricType] ?? null;
+    }
+
+
+    private function getPreparedHostname(): string
     {
         return $this->prepareNamespace($this->config->getServerHostname());
     }
 
-    /**
-     * @param  string $namespace
-     * @return string
-     */
-    private function prepareNamespace($namespace)
+
+    private function prepareNamespace(string $namespace): string
     {
         if (!$this->config->replaceDotInHostname()) {
             return $namespace;
         }
-
         return str_replace(self::NAMESPACE_SEPARATOR, self::NAMESPACE_DOT_REPLACER, $namespace);
     }
 }

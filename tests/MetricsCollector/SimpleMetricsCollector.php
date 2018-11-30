@@ -7,11 +7,11 @@ use TutuRu\Metrics\MetricsCollector;
 
 class SimpleMetricsCollector extends MetricsCollector
 {
-    protected function saveCustomMetrics()
+    protected function saveCustomMetrics(): void
     {
     }
 
-    protected function getTimingKey()
+    protected function getTimingKey(): string
     {
         return $this->glueNamespaces(['simple', 'metrics', 'collector']);
     }

@@ -26,5 +26,5 @@ interface MetricsInterface
      */
     public function getAllSessions(): array;
 
-    public function send();
+    public function send(): void;
 }

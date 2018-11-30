@@ -24,6 +24,7 @@ class UdpMetricsSession implements MetricsSessionInterface
     /** @var Client */
     private $statsdClient;
 
+    /** @var bool|null */
     private $isEnabled;
 
 
@@ -35,56 +36,6 @@ class UdpMetricsSession implements MetricsSessionInterface
         $this->isEnabled = $this->params->isSessionEnabled();
     }
 
-    /**
-     * @param string      $key
-     * @param string|null $metricsType
-     * @param bool        $isExporter
-     *
-     * @return string
-     */
-    private function prepareKey(string $key, $metricsType = null, bool $isExporter = false)
-    {
-        return $this->getMetricBuilder()->prepareKey($key, $metricsType, $isExporter);
-    }
-
-    private function getMetricBuilder(): MetricBuilder
-    {
-        return $this->metricBuilder;
-    }
-
-    private function statsdClient()
-    {
-        if (is_null($this->statsdClient)) {
-            $connection = $this->createStatsdConnection();
-            $this->statsdClient = new Client($connection);
-            if (!is_null($this->params->getNamespace())) {
-                $this->statsdClient->setNamespace($this->params->getNamespace());
-            }
-            $this->statsdClient->startBatch();
-        }
-
-        return $this->statsdClient;
-    }
-
-    private function resetClient()
-    {
-        $this->statsdClient = null;
-    }
-
-    protected function createStatsdConnection(): Connection
-    {
-        return new UdpSocket(
-            $this->params->getHost(),
-            $this->params->getPort(),
-            $this->params->getTimeoutInSec(),
-            true
-        );
-    }
-
-    protected function getParams(): SessionParams
-    {
-        return $this->params;
-    }
 
     public function count(string $key, int $value, array $tags = []): MetricsSessionInterface
     {
@@ -100,6 +51,7 @@ class UdpMetricsSession implements MetricsSessionInterface
         return $this;
     }
 
+
     public function increment(string $key, array $tags = []): MetricsSessionInterface
     {
         if ($this->isEnabled()) {
@@ -112,6 +64,7 @@ class UdpMetricsSession implements MetricsSessionInterface
 
         return $this;
     }
+
 
     public function decrement(string $key, array $tags = []): MetricsSessionInterface
     {
@@ -126,10 +79,12 @@ class UdpMetricsSession implements MetricsSessionInterface
         return $this;
     }
 
+
     public function timing(string $key, float $seconds, array $tags = []): MetricsSessionInterface
     {
         return $this->measureAsTiming($key, (int)($seconds * 1000), $this->prepareTags($tags));
     }
+
 
     public function measureAsTiming(string $key, int $ms, array $tags = []): MetricsSessionInterface
     {
@@ -145,6 +100,7 @@ class UdpMetricsSession implements MetricsSessionInterface
         return $this;
     }
 
+
     public function gauge(string $key, int $value, array $tags = []): MetricsSessionInterface
     {
         if ($this->isEnabled()) {
@@ -158,6 +114,7 @@ class UdpMetricsSession implements MetricsSessionInterface
         return $this;
     }
 
+
     public function send(): void
     {
         if ($this->isEnabled()) {
@@ -166,24 +123,66 @@ class UdpMetricsSession implements MetricsSessionInterface
         }
     }
 
-    protected function prepareTags(array $tags): array
+
+    protected function createStatsdConnection(): Connection
+    {
+        return new UdpSocket(
+            $this->params->getHost(),
+            $this->params->getPort(),
+            $this->params->getTimeoutInSec(),
+            true
+        );
+    }
+
+
+    protected function getParams(): SessionParams
+    {
+        return $this->params;
+    }
+
+
+    private function statsdClient(): Client
+    {
+        if (is_null($this->statsdClient)) {
+            $connection = $this->createStatsdConnection();
+            $this->statsdClient = new Client($connection);
+            if (!is_null($this->params->getNamespace())) {
+                $this->statsdClient->setNamespace($this->params->getNamespace());
+            }
+            $this->statsdClient->startBatch();
+        }
+
+        return $this->statsdClient;
+    }
+
+
+    private function resetClient(): void
+    {
+        $this->statsdClient = null;
+    }
+
+
+    private function prepareKey(string $key, ?string $metricsType = null, bool $isExporter = false): string
+    {
+        return $this->metricBuilder->prepareKey($key, $metricsType, $isExporter);
+    }
+
+
+    private function prepareTags(array $tags): array
     {
         if (!$this->params->isExporter()) {
             // Отправка тегов поддержана только для statsd_exporter
             return [];
         }
 
-        return $this->getMetricBuilder()->prepareTags($tags);
+        return $this->metricBuilder->prepareTags($tags);
     }
 
-    /**
-     * Если флаг включения не указан - ориентируемся на общий. Иначе сессия - приоритетней
-     *
-     * @return bool
-     */
-    private function isEnabled()
+
+    private function isEnabled(): bool
     {
         if (is_null($this->isEnabled)) {
+            // Если флаг включения не указан - ориентируемся на общий. Иначе сессия - приоритетней
             return $this->config->isEnabled();
         }
         return $this->isEnabled;

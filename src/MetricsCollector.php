@@ -28,62 +28,50 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
      * Короткое имя метрики для prometheus statsd_exporter
      * @var string
      */
-    protected $statsdExporterTimersMetricName;
+    private $statsdExporterTimersMetricName;
 
     /**
      * Теги для prometheus statsd_exporter
-     *
-     * @var array
+     * @var string[]
      */
-    protected $statsdExporterTimersTags = [];
+    private $statsdExporterTimersTags = [];
 
 
-    abstract protected function saveCustomMetrics();
+    abstract protected function saveCustomMetrics(): void;
 
-    abstract protected function getTimingKey();
+    abstract protected function getTimingKey(): string;
 
 
-    /**
-     * @param float|null $timeSeconds
-     */
-    public function startTiming($timeSeconds = null)
+    public function startTiming(?float $timeSeconds = null): void
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
     }
 
-    public function endTiming()
+
+    public function endTiming(): void
     {
-        $this->time = $this->getCurrentTiming();
+        if (is_null($this->startTime)) {
+            if (!is_null($this->logger)) {
+                $this->logger->error("unexpected endTiming call: no startTiming");
+            }
+            $this->time = null;
+        } else {
+            $this->time = microtime(true) - $this->startTime;
+        }
     }
 
-    public function addTiming($valueInSecs)
+
+    public function addTiming(float $seconds): void
     {
-        $this->time = ($this->time ?? 0) + $valueInSecs;
+        $this->time = ($this->time ?? 0) + $seconds;
     }
 
-    public function getTiming()
+
+    public function getTiming(): ?float
     {
         return $this->time;
     }
 
-    protected function setStatsdExporterTimersMetricName(string $metricName): void
-    {
-        $this->statsdExporterTimersMetricName = MetricNameUtils::prepareMetricNameForStatsdExporter($metricName);
-    }
-
-    /**
-     * Возвращает текущую отсечку с начала отсчета времени
-     *
-     * @return float
-     */
-    public function getCurrentTiming()
-    {
-        if (!is_null($this->startTime)) {
-            return microtime(true) - $this->startTime;
-        }
-
-        return null;
-    }
 
     public function save(): bool
     {
@@ -103,41 +91,40 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
         return $result;
     }
 
-    /**
-     * Склеивает несколько частей имени метрики в валидное имя
-     * @param array $namespaces
-     *
-     * @return string
-     */
-    protected function glueNamespaces(array $namespaces)
+
+    protected function glueNamespaces(array $namespaces): string
     {
         return MetricNameUtils::prepareMetricName(implode('.', str_replace('.', '_', $namespaces)));
     }
 
-    /**
-     * Возвращает сессию StatsD для отправки метрик
-     * На этапе выверки метрик нужно переопределить метод для возвращения garbage-сессии
-     *
-     * @return MetricsSessionInterface
-     * @throws Exceptions\MetricsException
-     */
+
+    protected function setStatsdExporterTimersMetricName(string $metricName): void
+    {
+        $this->statsdExporterTimersMetricName = MetricNameUtils::prepareMetricNameForStatsdExporter($metricName);
+    }
+
+
+    protected function setStatsdExporterTimersTags(array $tags): void
+    {
+        $this->statsdExporterTimersTags = $tags;
+    }
+
+
     protected function getSession(): MetricsSessionInterface
     {
         return $this->getMetrics()->getRequestedSessionOrDefault(SessionNames::NAME_WORK);
     }
 
+
     /**
      * @return MetricsSessionInterface[]
-     * @throws Exceptions\MetricsException
      */
     protected function getSessions(): array
     {
         return [$this->getSession()];
     }
 
-    /**
-     * @throws Exceptions\MetricsException
-     */
+
     private function sendTimersToStatsdSessions(): void
     {
         foreach ($this->getSessions() as $session) {
@@ -150,6 +137,7 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
             }
         }
     }
+
 
     private function sendTimersToStatsdExporterSession(): void
     {
@@ -174,10 +162,7 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
         }
     }
 
-    /**
-     * @return MetricsSessionInterface
-     * @throws Exceptions\MetricsException
-     */
+
     private function getStatsdExporterSession(): MetricsSessionInterface
     {
         return $this->getMetrics()->getRequestedSessionOrNull(SessionNames::NAME_STATSD_EXPORTER);

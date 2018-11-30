@@ -10,10 +10,12 @@ trait MetricsAwareTrait
     /** @var MetricsInterface */
     private $metrics;
 
+
     public function setMetrics(MetricsInterface $metricsSessions)
     {
         $this->metrics = $metricsSessions;
     }
+
 
     /**
      * @return MetricsInterface
