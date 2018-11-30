@@ -3,16 +3,13 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Metrics\Metrics;
 use TutuRu\Metrics\SessionNames;
 
 class MetricsSessionTest extends BaseTest
 {
     private function getSession($name = SessionNames::NAME_DEFAULT): MemoryMetricsSession
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
-        return $metrics->getSession($name);
+        return $this->getMemoryMetrics()->getSession($name);
     }
 
     public function testSend()

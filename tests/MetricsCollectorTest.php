@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Metrics\Metrics;
 use TutuRu\Metrics\SessionNames;
 use TutuRu\Tests\Metrics\MetricsCollector\ExporterMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
@@ -13,8 +12,7 @@ class MetricsCollectorTest extends BaseTest
 {
     public function testDefaultSession()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
@@ -39,8 +37,7 @@ class MetricsCollectorTest extends BaseTest
 
     public function testEndTimingWithoutStart()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
@@ -56,8 +53,7 @@ class MetricsCollectorTest extends BaseTest
 
     public function testAddTiming()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
@@ -76,8 +72,7 @@ class MetricsCollectorTest extends BaseTest
 
     public function testCustomMetrics()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
@@ -101,8 +96,7 @@ class MetricsCollectorTest extends BaseTest
 
     public function testStatsdExporter()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_WORK);
         /** @var MemoryMetricsSession $sessionExporter */

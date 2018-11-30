@@ -5,7 +5,6 @@ namespace TutuRu\Tests\Metrics;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use TutuRu\Metrics\Exceptions\UnknownSessionException;
-use TutuRu\Metrics\Metrics;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
 use TutuRu\Metrics\MetricsSession\NullMetricsSession;
 use TutuRu\Metrics\SessionNames;
@@ -18,8 +17,7 @@ class MetricsTest extends BaseTest
 
     public function testGetSessionDefault()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getSession(SessionNames::NAME_DEFAULT);
@@ -29,8 +27,7 @@ class MetricsTest extends BaseTest
 
     public function testGetSessionCache()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->assertSame($metrics->getSession(SessionNames::NAME_WORK), $metrics->getSession(SessionNames::NAME_WORK));
     }
@@ -38,8 +35,7 @@ class MetricsTest extends BaseTest
 
     public function testGetSessionUnknown()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->expectException(UnknownSessionException::class);
         $metrics->getSession('unknown');
@@ -48,8 +44,7 @@ class MetricsTest extends BaseTest
 
     public function testGetNullSession()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->assertInstanceOf(NullMetricsSession::class, $metrics->getNullSession());
     }
@@ -57,8 +52,7 @@ class MetricsTest extends BaseTest
 
     public function testGetNullSessionSameObject()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->assertSame($metrics->getNullSession(), $metrics->getNullSession());
     }
@@ -66,8 +60,7 @@ class MetricsTest extends BaseTest
 
     public function testGetRequestedSessionOrDefault()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getRequestedSessionOrDefault(SessionNames::NAME_WORK);
@@ -77,8 +70,7 @@ class MetricsTest extends BaseTest
 
     public function testGetRequestedSessionOrDefaultWithUnknown()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         /** @var MemoryMetricsSession $session */
         $session = $metrics->getRequestedSessionOrDefault('unknown');
@@ -89,9 +81,7 @@ class MetricsTest extends BaseTest
     public function testGetRequestedSessionOrDefaultWithoutDefault()
     {
         $this->config->setApplicationConfig(new TestConfig(__DIR__ . '/config/without_default.json'));
-
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->assertInstanceOf(NullMetricsSession::class, $metrics->getRequestedSessionOrDefault('unknown'));
     }
@@ -99,8 +89,7 @@ class MetricsTest extends BaseTest
 
     public function testGetAllSessions()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $this->assertCount(0, $metrics->getAllSessions());
 
@@ -125,8 +114,7 @@ class MetricsTest extends BaseTest
 
     public function testGetAllSessionsNotContainsNullSession()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory();
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         $metrics->getNullSession();
         $this->assertCount(0, $metrics->getAllSessions());
@@ -135,8 +123,7 @@ class MetricsTest extends BaseTest
 
     public function testSend()
     {
-        $sessionFactory = new MemoryMetricsSessionFactory($this);
-        $metrics = new Metrics($this->config, null, $sessionFactory);
+        $metrics = $this->getMemoryMetrics();
 
         /** @var MetricsSessionInterface|MockObject $default */
         $default = $metrics->getSession(SessionNames::NAME_DEFAULT);

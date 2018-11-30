@@ -31,8 +31,8 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
 
     public function __construct(
         Config $config,
-        LoggerInterface $logger = null,
-        MetricsSessionFactoryInterface $sessionFactory = null
+        MetricsSessionFactoryInterface $sessionFactory = null,
+        LoggerInterface $logger = null
     ) {
         $this->config = new MetricsConfig($config);
         if (!is_null($logger)) {
