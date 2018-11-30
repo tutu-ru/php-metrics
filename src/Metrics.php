@@ -10,7 +10,6 @@ use TutuRu\Config\Config;
 use TutuRu\Metrics\Exceptions\UnknownSessionException;
 use TutuRu\Metrics\MetricsSession\MetricsSessionFactoryInterface;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
-use TutuRu\Metrics\MetricsSession\UdpMetricsSessionFactory;
 
 class Metrics implements MetricsInterface, LoggerAwareInterface
 {
@@ -31,14 +30,14 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
 
     public function __construct(
         Config $config,
-        MetricsSessionFactoryInterface $sessionFactory = null,
+        MetricsSessionFactoryInterface $sessionFactory,
         LoggerInterface $logger = null
     ) {
         $this->config = new MetricsConfig($config);
+        $this->sessionFactory = $sessionFactory;
         if (!is_null($logger)) {
             $this->setLogger($logger);
         }
-        $this->sessionFactory = $sessionFactory ?? new UdpMetricsSessionFactory();
     }
 
 
