@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics\MetricsCollector;
 
-class SimpleMetricsCollector extends BaseMetricsCollector
+class BrokenTimingKeyMetricsCollector extends BaseMetricsCollector
 {
     protected function saveCustomMetrics(): void
     {
@@ -11,6 +11,6 @@ class SimpleMetricsCollector extends BaseMetricsCollector
 
     protected function getTimingKey(): string
     {
-        return $this->glueNamespaces(['simple', 'metrics', 'collector']);
+        throw new \Exception();
     }
 }

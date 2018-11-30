@@ -23,6 +23,6 @@ abstract class BaseTest extends TestCase
     protected function getMemoryMetrics(): Metrics
     {
         $sessionFactory = new MemoryMetricsSessionFactory($this);
-        return new Metrics($this->config, $sessionFactory);
+        return new Metrics($this->config, $sessionFactory, new NullLogger());
     }
 }

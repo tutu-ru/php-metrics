@@ -6,7 +6,8 @@ namespace TutuRu\Tests\Metrics;
 use PHPUnit\Framework\MockObject\MockObject;
 use RM\StatsD\Session\NullSession;
 use TutuRu\Metrics\SessionNames;
-use TutuRu\Tests\Metrics\MetricsCollector\BrokenMetricsCollector;
+use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
+use TutuRu\Tests\Metrics\MetricsCollector\BrokenTimingKeyMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\ExporterMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\CustomMetricsCollector;
@@ -36,6 +37,15 @@ class MetricsCollectorTest extends BaseTest
             '/simple\.metrics\.collector:\d+|ms/',
             $session->getLastCreatedConnection()->getMessages()[0]
         );
+    }
+
+
+    public function testNotInitializedCollector()
+    {
+        $collector = new SimpleMetricsCollector();
+        $collector->startTiming();
+        $collector->endTiming();
+        $this->assertFalse($collector->save());
     }
 
 
@@ -158,12 +168,21 @@ class MetricsCollectorTest extends BaseTest
         );
     }
 
-    public function testFailedSave()
+    public function testExceptionInSaveCustomMetrics()
     {
         $metrics = $this->getMemoryMetrics();
-        $collector = new BrokenMetricsCollector();
+        $collector = new BrokenCustomMetricsCollector();
         $collector->setMetrics($metrics);
-        $result = $collector->save();
-        $this->assertFalse($result);
+
+        $this->assertFalse($collector->save());
+    }
+
+    public function testExceptionInGetTimingKey()
+    {
+        $metrics = $this->getMemoryMetrics();
+        $collector = new BrokenTimingKeyMetricsCollector();
+        $collector->setMetrics($metrics);
+
+        $this->assertTrue($collector->save());
     }
 }

@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics\MetricsCollector;
 
-use TutuRu\Metrics\MetricsCollector;
-
-class ExporterMetricsCollector extends MetricsCollector
+class ExporterMetricsCollector extends BaseMetricsCollector
 {
     public function __construct()
     {
+        parent::__construct();
         $this->setStatsdExporterTimersMetricName('exporter');
         $this->setStatsdExporterTimersTags(['env' => 'test']);
     }
