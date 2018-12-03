@@ -5,7 +5,7 @@ namespace TutuRu\Tests\Metrics;
 
 use PHPUnit\Framework\TestCase;
 use TutuRu\Config\Config;
-use TutuRu\Metrics\Metrics;
+use TutuRu\Metrics\SessionRegistry;
 
 abstract class BaseTest extends TestCase
 {
@@ -20,9 +20,9 @@ abstract class BaseTest extends TestCase
     }
 
 
-    protected function getMemoryMetrics(): Metrics
+    protected function getMemoryMetrics(): SessionRegistry
     {
         $sessionFactory = new MemoryMetricsSessionFactory($this);
-        return new Metrics($this->config, $sessionFactory, new NullLogger());
+        return new SessionRegistry($this->config, $sessionFactory, new NullLogger());
     }
 }

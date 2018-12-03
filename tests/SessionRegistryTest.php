@@ -9,7 +9,7 @@ use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
 use TutuRu\Metrics\MetricsSession\NullMetricsSession;
 use TutuRu\Metrics\SessionNames;
 
-class MetricsTest extends BaseTest
+class SessionRegistryTest extends BaseTest
 {
     private const PORT_DEFAULT = 3434;
     private const PORT_WORK = 3456;
@@ -91,14 +91,14 @@ class MetricsTest extends BaseTest
     {
         $metrics = $this->getMemoryMetrics();
 
-        $this->assertCount(0, $metrics->getAllSessions());
+        $this->assertCount(0, $metrics->getSessions());
 
         $metrics->getSession(SessionNames::NAME_DEFAULT);
         $this->assertEquals(
             [
                 SessionNames::NAME_DEFAULT => $metrics->getSession(SessionNames::NAME_DEFAULT)
             ],
-            $metrics->getAllSessions()
+            $metrics->getSessions()
         );
 
         $metrics->getSession(SessionNames::NAME_WORK);
@@ -107,7 +107,7 @@ class MetricsTest extends BaseTest
                 SessionNames::NAME_DEFAULT => $metrics->getSession(SessionNames::NAME_DEFAULT),
                 SessionNames::NAME_WORK    => $metrics->getSession(SessionNames::NAME_WORK),
             ],
-            $metrics->getAllSessions()
+            $metrics->getSessions()
         );
     }
 
@@ -117,7 +117,7 @@ class MetricsTest extends BaseTest
         $metrics = $this->getMemoryMetrics();
 
         $metrics->getNullSession();
-        $this->assertCount(0, $metrics->getAllSessions());
+        $this->assertCount(0, $metrics->getSessions());
     }
 
 
@@ -132,6 +132,6 @@ class MetricsTest extends BaseTest
 
         $default->expects($this->exactly(1))->method('send');
         $work->expects($this->exactly(1))->method('send');
-        $metrics->send();
+        $metrics->flushSessions();
     }
 }

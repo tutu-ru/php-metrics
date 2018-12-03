@@ -9,8 +9,8 @@ use TutuRu\Metrics\MetricsSession\UdpMetricsSessionFactory;
 
 class UdpMetricsFactory
 {
-    public static function create(Config $config, LoggerInterface $logger = null): Metrics
+    public static function createSessionRegistry(Config $config, LoggerInterface $logger = null): SessionRegistry
     {
-        return new Metrics($config, new UdpMetricsSessionFactory(), $logger);
+        return new SessionRegistry($config, new UdpMetricsSessionFactory(), $logger);
     }
 }

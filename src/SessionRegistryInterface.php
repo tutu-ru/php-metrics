@@ -6,7 +6,7 @@ namespace TutuRu\Metrics;
 use TutuRu\Metrics\Exceptions\UnknownSessionException;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
 
-interface MetricsInterface
+interface SessionRegistryInterface
 {
     /**
      * @param string $name
@@ -24,7 +24,7 @@ interface MetricsInterface
     /**
      * @return MetricsSessionInterface[]
      */
-    public function getAllSessions(): array;
+    public function getSessions(): array;
 
-    public function send(): void;
+    public function flushSessions(): void;
 }

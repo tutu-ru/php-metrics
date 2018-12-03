@@ -11,7 +11,7 @@ use TutuRu\Metrics\Exceptions\UnknownSessionException;
 use TutuRu\Metrics\MetricsSession\MetricsSessionFactoryInterface;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
 
-class Metrics implements MetricsInterface, LoggerAwareInterface
+class SessionRegistry implements SessionRegistryInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -97,15 +97,15 @@ class Metrics implements MetricsInterface, LoggerAwareInterface
     /**
      * @return MetricsSessionInterface[]
      */
-    public function getAllSessions(): array
+    public function getSessions(): array
     {
         return $this->sessions;
     }
 
 
-    public function send(): void
+    public function flushSessions(): void
     {
-        foreach ($this->getAllSessions() as $session) {
+        foreach ($this->getSessions() as $session) {
             $session->send();
         }
     }

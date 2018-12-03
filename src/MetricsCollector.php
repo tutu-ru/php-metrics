@@ -110,9 +110,15 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
     }
 
 
+    protected function addStatsdExporterTimersTags(array $tags): void
+    {
+        $this->statsdExporterTimersTags = array_merge($this->statsdExporterTimersTags, $tags);
+    }
+
+
     protected function getSession(): MetricsSessionInterface
     {
-        return $this->getMetrics()->getRequestedSessionOrDefault(SessionNames::NAME_WORK);
+        return $this->getMetricsSessionRegistry()->getRequestedSessionOrDefault(SessionNames::NAME_WORK);
     }
 
 
@@ -165,6 +171,6 @@ abstract class MetricsCollector implements LoggerAwareInterface, MetricsAwareInt
 
     private function getStatsdExporterSession(): MetricsSessionInterface
     {
-        return $this->getMetrics()->getRequestedSessionOrNull(SessionNames::NAME_STATSD_EXPORTER);
+        return $this->getMetricsSessionRegistry()->getRequestedSessionOrNull(SessionNames::NAME_STATSD_EXPORTER);
     }
 }

@@ -21,7 +21,7 @@ class MetricsCollectorTest extends BaseTest
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
         $collector = new SimpleMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->startTiming();
         $collector->endTiming();
@@ -31,7 +31,7 @@ class MetricsCollectorTest extends BaseTest
         $this->assertTrue($result);
         $this->assertCount(0, $session->getLastCreatedConnection()->getMessages());
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertRegExp(
             '/simple\.metrics\.collector:\d+|ms/',
@@ -56,13 +56,13 @@ class MetricsCollectorTest extends BaseTest
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
         $collector = new SimpleMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->endTiming();
         $result = $collector->save();
         $this->assertTrue($result);
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(0, $session->getLastCreatedConnection()->getMessages());
     }
 
@@ -74,13 +74,13 @@ class MetricsCollectorTest extends BaseTest
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
         $collector = new SimpleMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->addTiming(500);
         $result = $collector->save();
         $this->assertTrue($result);
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
             'simple.metrics.collector:500000|ms',
@@ -95,13 +95,13 @@ class MetricsCollectorTest extends BaseTest
         $session = $metrics->getSession(SessionNames::NAME_WORK);
 
         $collector = new CustomMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->addTiming(500);
         $result = $collector->save();
         $this->assertTrue($result);
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(2, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
             'simple.metrics.collector:500000|ms',
@@ -123,13 +123,13 @@ class MetricsCollectorTest extends BaseTest
         $sessionExporter = $metrics->getSession(SessionNames::NAME_STATSD_EXPORTER);
 
         $collector = new ExporterMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->addTiming(500);
         $result = $collector->save();
         $this->assertTrue($result);
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
             'simple.metrics.collector:500000|ms',
@@ -154,13 +154,13 @@ class MetricsCollectorTest extends BaseTest
         $nullSession->expects($this->exactly(1))->method('timing');
 
         $collector = new ExporterMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $collector->addTiming(500);
         $result = $collector->save();
         $this->assertTrue($result);
 
-        $metrics->send();
+        $metrics->flushSessions();
         $this->assertCount(1, $session->getLastCreatedConnection()->getMessages());
         $this->assertEquals(
             'simple.metrics.collector:500000|ms',
@@ -172,7 +172,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $metrics = $this->getMemoryMetrics();
         $collector = new BrokenCustomMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $this->assertFalse($collector->save());
     }
@@ -181,7 +181,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $metrics = $this->getMemoryMetrics();
         $collector = new BrokenTimingKeyMetricsCollector();
-        $collector->setMetrics($metrics);
+        $collector->setMetricsSessionRegistry($metrics);
 
         $this->assertTrue($collector->save());
     }
