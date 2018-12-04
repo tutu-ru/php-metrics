@@ -6,7 +6,7 @@ namespace TutuRu\Metrics;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use TutuRu\Config\Config;
+use TutuRu\Config\ConfigContainer;
 use TutuRu\Metrics\Exceptions\UnknownSessionException;
 use TutuRu\Metrics\MetricsSession\MetricsSessionFactoryInterface;
 use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
@@ -29,7 +29,7 @@ class SessionRegistry implements SessionRegistryInterface, LoggerAwareInterface
 
 
     public function __construct(
-        Config $config,
+        ConfigContainer $config,
         MetricsSessionFactoryInterface $sessionFactory,
         LoggerInterface $logger = null
     ) {

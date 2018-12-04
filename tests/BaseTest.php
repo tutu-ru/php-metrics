@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use PHPUnit\Framework\TestCase;
-use TutuRu\Config\Config;
+use TutuRu\Config\ConfigContainer;
 use TutuRu\Metrics\SessionRegistry;
 
 abstract class BaseTest extends TestCase
 {
-    /** @var Config */
+    /** @var ConfigContainer */
     protected $config;
 
     public function setUp()
     {
         parent::setUp();
-        $this->config = new Config();
+        $this->config = new ConfigContainer();
         $this->config->setApplicationConfig(new TestConfig(__DIR__ . '/config/application.json'));
     }
 

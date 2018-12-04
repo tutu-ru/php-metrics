@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-use TutuRu\Config\Config;
+use TutuRu\Config\ConfigContainer;
 
 class MetricsConfig
 {
@@ -26,11 +26,11 @@ class MetricsConfig
     }
 
 
-    /** @var Config */
+    /** @var ConfigContainer */
     private $config;
 
 
-    public function __construct(Config $config)
+    public function __construct(ConfigContainer $config)
     {
         $this->config = $config;
     }
