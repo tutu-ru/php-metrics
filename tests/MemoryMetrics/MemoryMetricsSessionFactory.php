@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics;
+namespace TutuRu\Tests\Metrics\MemoryMetrics;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -15,9 +15,24 @@ class MemoryMetricsSessionFactory implements MetricsSessionFactoryInterface
 {
     private $testCase;
 
-    public function __construct(?TestCase $testCase = null)
+    public function __construct($testCase = null)
     {
-        $this->testCase = $testCase;
+        if (!is_null($testCase)) {
+            if (class_exists('PHPUnit_Framework_TestCase')) {
+                // PHPUnit 5 support
+                if (is_object($testCase) && $testCase instanceof \PHPUnit_Framework_TestCase) {
+                    $this->testCase = $testCase;
+                } else {
+                    throw new \RuntimeException('$testCase parameter: expected \PHPUnit_Framework_TestCase object');
+                }
+            } else {
+                if (is_object($testCase) && $testCase instanceof TestCase) {
+                    $this->testCase = $testCase;
+                } else {
+                    throw new \RuntimeException('$testCase parameter: expected ' . TestCase::class . ' object');
+                }
+            }
+        }
     }
 
     /**
