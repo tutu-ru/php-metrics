@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics;
+namespace TutuRu\Tests\Metrics\MemoryMetrics;
 
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\InMemory;

@@ -57,7 +57,6 @@ class MetricBuilderTest extends BaseTest
     /**
      * @dataProvider metricPrefixesDataProvider
      * @param string $metric
-     * @throws \TutuRu\Config\Exceptions\NotMutableApplicationConfigException
      */
     public function testPrepareKeyWithMetricType(string $metric)
     {
@@ -74,7 +73,6 @@ class MetricBuilderTest extends BaseTest
     /**
      * @dataProvider metricPrefixesDataProvider
      * @param string $metric
-     * @throws \TutuRu\Config\Exceptions\NotMutableApplicationConfigException
      */
     public function testPrepareKeyForStatsdExporter(string $metric)
     {

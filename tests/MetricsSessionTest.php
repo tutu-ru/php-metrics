@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Metrics\SessionNames;
+use TutuRu\Tests\Metrics\MemoryMetrics\MemoryMetricsSession;
 
 class MetricsSessionTest extends BaseTest
 {

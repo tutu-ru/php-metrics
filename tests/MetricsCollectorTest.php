@@ -6,6 +6,7 @@ namespace TutuRu\Tests\Metrics;
 use PHPUnit\Framework\MockObject\MockObject;
 use RM\StatsD\Session\NullSession;
 use TutuRu\Metrics\SessionNames;
+use TutuRu\Tests\Metrics\MemoryMetrics\MemoryMetricsSession;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenTimingKeyMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\ExporterMetricsCollector;
