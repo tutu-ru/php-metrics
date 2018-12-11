@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
+use TutuRu\Config\EnvironmentUtils;
+
 class MetricBuilder
 {
     public const METRIC_TYPE_TIMERS = 'timers';
@@ -55,7 +57,7 @@ class MetricBuilder
 
     private function getPreparedHostname(): string
     {
-        return $this->prepareNamespace($this->config->getServerHostname());
+        return $this->prepareNamespace(EnvironmentUtils::getServerHostname());
     }
 
 

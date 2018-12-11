@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\Metrics;
 
 use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\EnvironmentUtils;
 
 class MetricsConfig
 {
@@ -81,11 +82,5 @@ class MetricsConfig
     public function getAppName(): string
     {
         return $this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown';
-    }
-
-
-    public function getServerHostname(): string
-    {
-        return $this->config->getServerHostname();
     }
 }
