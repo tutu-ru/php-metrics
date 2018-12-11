@@ -1,18 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Metrics\MetricsSession;
+namespace TutuRu\Metrics\MetricsExporter;
 
 use Domnikl\Statsd\Client;
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\UdpSocket;
 use TutuRu\Metrics\MetricBuilder;
+use TutuRu\Metrics\MetricsCollector;
 use TutuRu\Metrics\MetricsConfig;
-use TutuRu\Metrics\SessionParams;
+use TutuRu\Metrics\ExporterParams;
+use TutuRu\Metrics\MetricsExporterInterface;
 
-class UdpMetricsSession implements MetricsSessionInterface
+class UdpMetricsExporter implements MetricsExporterInterface
 {
-    /** @var SessionParams */
+    /** @var ExporterParams */
     private $params;
 
     /** @var MetricsConfig */
@@ -28,7 +30,7 @@ class UdpMetricsSession implements MetricsSessionInterface
     private $isEnabled;
 
 
-    public function __construct(MetricsConfig $config, SessionParams $params)
+    public function __construct(MetricsConfig $config, ExporterParams $params)
     {
         $this->params = $params;
         $this->config = $config;
@@ -135,7 +137,7 @@ class UdpMetricsSession implements MetricsSessionInterface
     }
 
 
-    protected function getParams(): SessionParams
+    protected function getParams(): ExporterParams
     {
         return $this->params;
     }
@@ -186,5 +188,15 @@ class UdpMetricsSession implements MetricsSessionInterface
             return $this->config->isEnabled();
         }
         return $this->isEnabled;
+    }
+
+    public function collect(MetricsCollector $collector): MetricsExporterInterface
+    {
+        // TODO: Implement collect() method.
+    }
+
+    public function export(): void
+    {
+        // TODO: Implement export() method.
     }
 }

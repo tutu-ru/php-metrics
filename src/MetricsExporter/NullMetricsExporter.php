@@ -1,9 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Metrics\MetricsSession;
+namespace TutuRu\Metrics\MetricsExporter;
 
-class NullMetricsSession implements MetricsSessionInterface
+use TutuRu\Metrics\MetricsCollector;
+use TutuRu\Metrics\MetricsExporterInterface;
+
+class NullMetricsExporter implements MetricsExporterInterface
 {
     public function count(string $key, int $value, array $tags = []): MetricsSessionInterface
     {
@@ -37,5 +40,15 @@ class NullMetricsSession implements MetricsSessionInterface
 
     public function send(): void
     {
+    }
+
+    public function collect(MetricsCollector $collector): MetricsExporterInterface
+    {
+        // TODO: Implement collect() method.
+    }
+
+    public function export(): void
+    {
+        // TODO: Implement export() method.
     }
 }

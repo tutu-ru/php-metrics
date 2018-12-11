@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Metrics\MetricsConfig;
-use TutuRu\Metrics\MetricsSession\NullMetricsSession;
-use TutuRu\Metrics\MetricsSession\UdpMetricsSession;
-use TutuRu\Metrics\MetricsSession\UdpMetricsSessionFactory;
+use TutuRu\Metrics\MetricsExporter\NullMetricsSession;
+use TutuRu\Metrics\MetricsExporter\UdpMetricsExporter;
+use TutuRu\Metrics\MetricsExporter\UdpMetricsSessionFactory;
 use TutuRu\Metrics\SessionNames;
 
 class UdpMetricsSessionFactoryTest extends BaseTest
@@ -19,7 +19,7 @@ class UdpMetricsSessionFactoryTest extends BaseTest
             $metricsConfig->getSessionParameters(SessionNames::NAME_DEFAULT),
             $metricsConfig
         );
-        $this->assertInstanceOf(UdpMetricsSession::class, $session);
+        $this->assertInstanceOf(UdpMetricsExporter::class, $session);
     }
 
 

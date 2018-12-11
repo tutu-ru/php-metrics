@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TutuRu\Metrics;
 
 use TutuRu\Config\ConfigContainer;
-use TutuRu\Config\EnvironmentUtils;
 
 class MetricsConfig
 {
@@ -37,32 +36,17 @@ class MetricsConfig
     }
 
 
-    public function getSessionParameters(string $sessionName): ?SessionParams
+    public function getExporterParameters(): ?ExporterParams
     {
-        if (is_null($this->config->getValue('statsd.sessions.' . $sessionName))) {
-            return null;
-        }
-
-        $host = $this->config->getValue('statsd.sessions.' . $sessionName . '.host', '', true);
-        $port = (int)$this->config->getValue('statsd.sessions.' . $sessionName . '.port', 8125);
-        $ns = $this->config->getValue('statsd.sessions.' . $sessionName . '.namespace', null);
+        $host = $this->config->getValue('metrics.statsd_exporter.host', null, true);
+        $port = $this->config->getValue('metrics.statsd_exporter.port', null, true);
+        $enabled = (bool)$this->config->getValue('metrics.statsd_exporter.enabled', false);
+        $ns = $this->config->getValue('metrics.statsd_exporter.namespace', null);
         if (!is_null($ns)) {
             $ns = (string)$ns;
         }
-        $timeout = (float)$this->config->getValue('statsd.sessions.' . $sessionName . '.timeout', 0);
-        $enabled = $this->config->getValue('statsd.sessions.' . $sessionName . '.enabled', null);
-        if (!is_null($enabled)) {
-            $enabled = (bool)$enabled;
-        }
-        $isExporter = (bool)$this->config->getValue('statsd.sessions.' . $sessionName . '.is_statsd_exporter', 0);
-
-        return new SessionParams($host, $port, $ns, $timeout, $enabled, $isExporter);
-    }
-
-
-    public function isEnabled(): bool
-    {
-        return self::isGloballyEnabled() || (bool)$this->config->getValue('statsd.enabled', false);
+        $timeout = (float)$this->config->getValue('metrics.statsd_exporter.timeout', 0);
+        return new ExporterParams($host, $port, $ns, $timeout, $enabled);
     }
 
 

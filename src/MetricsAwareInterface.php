@@ -7,11 +7,11 @@ use TutuRu\Metrics\Exceptions\MetricsException;
 
 interface MetricsAwareInterface
 {
-    public function setMetricsSessionRegistry(SessionRegistryInterface $metricsSessions);
+    public function setMetricsExporter(MetricsExporterInterface $metricsExporter);
 
     /**
-     * @return SessionRegistryInterface
+     * @return MetricsExporterInterface
      * @throws MetricsException
      */
-    public function getMetricsSessionRegistry(): SessionRegistryInterface;
+    public function getMetricsExporter(): MetricsExporterInterface;
 }

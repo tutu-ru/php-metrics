@@ -7,25 +7,25 @@ use TutuRu\Metrics\Exceptions\MetricsException;
 
 trait MetricsAwareTrait
 {
-    /** @var SessionRegistryInterface */
-    private $metricsSessionRegistry;
+    /** @var MetricsExporterInterface */
+    private $metricsExporter;
 
 
-    public function setMetricsSessionRegistry(SessionRegistryInterface $metricsSessions)
+    public function setMetricsExporter(MetricsExporterInterface $metricsExporter)
     {
-        $this->metricsSessionRegistry = $metricsSessions;
+        $this->metricsExporter = $metricsExporter;
     }
 
 
     /**
-     * @return SessionRegistryInterface
+     * @return MetricsExporterInterface
      * @throws MetricsException
      */
-    public function getMetricsSessionRegistry(): SessionRegistryInterface
+    public function getMetricsExporter(): MetricsExporterInterface
     {
-        if (is_null($this->metricsSessionRegistry)) {
-            throw new MetricsException("Metrics sessions not configured. Use setMetricsSessions method");
+        if (is_null($this->metricsExporter)) {
+            throw new MetricsException("Metrics exporter not configured. Use setMetricsExporter method");
         }
-        return $this->metricsSessionRegistry;
+        return $this->metricsExporter;
     }
 }

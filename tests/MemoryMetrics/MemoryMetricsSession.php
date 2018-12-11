@@ -5,10 +5,10 @@ namespace TutuRu\Tests\Metrics\MemoryMetrics;
 
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\InMemory;
-use TutuRu\Metrics\MetricsSession\UdpMetricsSession;
-use TutuRu\Metrics\SessionParams;
+use TutuRu\Metrics\MetricsExporter\UdpMetricsExporter;
+use TutuRu\Metrics\ExporterParams;
 
-class MemoryMetricsSession extends UdpMetricsSession
+class MemoryMetricsSession extends UdpMetricsExporter
 {
     /** @var InMemory */
     private $lastCreatedConnection;
@@ -25,7 +25,7 @@ class MemoryMetricsSession extends UdpMetricsSession
     }
 
     // увеличение видимости для тестов
-    public function getParams(): SessionParams
+    public function getParams(): ExporterParams
     {
         return parent::getParams();
     }

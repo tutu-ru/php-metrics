@@ -5,8 +5,8 @@ namespace TutuRu\Tests\Metrics;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use TutuRu\Metrics\Exceptions\UnknownSessionException;
-use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
-use TutuRu\Metrics\MetricsSession\NullMetricsSession;
+use TutuRu\Metrics\MetricsExporter\MetricsSessionInterface;
+use TutuRu\Metrics\MetricsExporter\NullMetricsSession;
 use TutuRu\Metrics\SessionNames;
 
 class SessionRegistryTest extends BaseTest

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-class SessionParams
+class ExporterParams
 {
     /** @var string */
     private $host;
@@ -20,23 +20,18 @@ class SessionParams
     /** @var bool */
     private $isEnabled;
 
-    /** @var bool */
-    private $isExporter;
-
     public function __construct(
         string $host,
         int $port,
         ?string $namespace,
         float $timeoutInSec,
-        ?bool $isSessionEnabled,
-        bool $isStatsdExporter
+        bool $isEnabled
     ) {
         $this->host = $host;
         $this->port = $port;
         $this->namespace = $namespace;
         $this->timeoutInSec = $timeoutInSec;
-        $this->isEnabled = $isSessionEnabled;
-        $this->isExporter = $isStatsdExporter;
+        $this->isEnabled = $isEnabled;
     }
 
     public function getHost(): string
@@ -59,13 +54,8 @@ class SessionParams
         return $this->timeoutInSec;
     }
 
-    public function isSessionEnabled(): ?bool
+    public function isEnabled(): ?bool
     {
         return is_null($this->isEnabled) ? null : (bool)$this->isEnabled;
-    }
-
-    public function isExporter(): bool
-    {
-        return $this->isExporter;
     }
 }

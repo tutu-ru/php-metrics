@@ -6,10 +6,10 @@ namespace TutuRu\Tests\Metrics\MemoryMetrics;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TutuRu\Metrics\MetricsConfig;
-use TutuRu\Metrics\MetricsSession\MetricsSessionFactoryInterface;
-use TutuRu\Metrics\MetricsSession\MetricsSessionInterface;
-use TutuRu\Metrics\MetricsSession\NullMetricsSession;
-use TutuRu\Metrics\SessionParams;
+use TutuRu\Metrics\MetricsExporter\MetricsSessionFactoryInterface;
+use TutuRu\Metrics\MetricsExporter\MetricsSessionInterface;
+use TutuRu\Metrics\MetricsExporter\NullMetricsSession;
+use TutuRu\Metrics\ExporterParams;
 
 class MemoryMetricsSessionFactory implements MetricsSessionFactoryInterface
 {
@@ -36,11 +36,11 @@ class MemoryMetricsSessionFactory implements MetricsSessionFactoryInterface
     }
 
     /**
-     * @param SessionParams $params
-     * @param MetricsConfig $config
+     * @param ExporterParams $params
+     * @param MetricsConfig  $config
      * @return MetricsSessionInterface|MockObject
      */
-    public function createSession(SessionParams $params, MetricsConfig $config): MetricsSessionInterface
+    public function createSession(ExporterParams $params, MetricsConfig $config): MetricsSessionInterface
     {
         if (!is_null($this->testCase)) {
             return $this->testCase->getMockBuilder(MemoryMetricsSession::class)
