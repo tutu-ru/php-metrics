@@ -8,47 +8,42 @@ use TutuRu\Metrics\MetricsExporterInterface;
 
 class NullMetricsExporter implements MetricsExporterInterface
 {
-    public function count(string $key, int $value, array $tags = []): MetricsSessionInterface
+    public function count(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function increment(string $key, array $tags = []): MetricsSessionInterface
+    public function increment(string $key, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function decrement(string $key, array $tags = []): MetricsSessionInterface
+    public function decrement(string $key, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function timing(string $key, float $seconds, array $tags = []): MetricsSessionInterface
+    public function timing(string $key, float $seconds, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function measureAsTiming(string $key, int $ms, array $tags = []): MetricsSessionInterface
+    public function measureAsTiming(string $key, int $ms, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function gauge(string $key, int $value, array $tags = []): MetricsSessionInterface
+    public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         return $this;
     }
 
-    public function send(): void
+    public function saveCollector(MetricsCollector $collector): MetricsExporterInterface
     {
-    }
-
-    public function collect(MetricsCollector $collector): MetricsExporterInterface
-    {
-        // TODO: Implement collect() method.
+        return $this;
     }
 
     public function export(): void
     {
-        // TODO: Implement export() method.
     }
 }

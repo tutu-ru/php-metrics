@@ -21,7 +21,7 @@ interface MetricsExporterInterface
 
     public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface;
 
-    public function collect(MetricsCollector $collector): MetricsExporterInterface;
+    public function saveCollector(MetricsCollector $collector): MetricsExporterInterface;
 
     public function export(): void;
 }

@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
+/**
+ * @inner
+ */
 class ExporterParams
 {
     /** @var string */
@@ -18,20 +21,15 @@ class ExporterParams
     private $timeoutInSec;
 
     /** @var bool */
-    private $isEnabled;
+    private $enabled;
 
-    public function __construct(
-        string $host,
-        int $port,
-        ?string $namespace,
-        float $timeoutInSec,
-        bool $isEnabled
-    ) {
+    public function __construct(string $host, int $port, ?string $namespace, float $timeoutInSec, bool $enabled)
+    {
         $this->host = $host;
         $this->port = $port;
         $this->namespace = $namespace;
         $this->timeoutInSec = $timeoutInSec;
-        $this->isEnabled = $isEnabled;
+        $this->enabled = $enabled;
     }
 
     public function getHost(): string
@@ -54,8 +52,8 @@ class ExporterParams
         return $this->timeoutInSec;
     }
 
-    public function isEnabled(): ?bool
+    public function isEnabled(): bool
     {
-        return is_null($this->isEnabled) ? null : (bool)$this->isEnabled;
+        return $this->enabled;
     }
 }
