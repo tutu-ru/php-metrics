@@ -7,25 +7,6 @@ use TutuRu\Config\ConfigContainer;
 
 class MetricsConfig
 {
-    private static $enabledInRuntime = false;
-
-    public static function enable()
-    {
-        self::$enabledInRuntime = true;
-    }
-
-
-    public static function disable()
-    {
-        self::$enabledInRuntime = false;
-    }
-
-    public static function isGloballyEnabled(): bool
-    {
-        return self::$enabledInRuntime;
-    }
-
-
     /** @var ConfigContainer */
     private $config;
 
@@ -36,35 +17,25 @@ class MetricsConfig
     }
 
 
-    public function getExporterParameters(): ?ExporterParams
+    public function getExporterParameters(): ExporterParams
     {
         $host = $this->config->getValue('metrics.statsd_exporter.host', null, true);
         $port = $this->config->getValue('metrics.statsd_exporter.port', null, true);
-        $enabled = (bool)$this->config->getValue('metrics.statsd_exporter.enabled', false);
-        $ns = $this->config->getValue('metrics.statsd_exporter.namespace', null);
-        if (!is_null($ns)) {
-            $ns = (string)$ns;
-        }
-        $timeout = (float)$this->config->getValue('metrics.statsd_exporter.timeout', 0);
-        return new ExporterParams($host, $port, $ns, $timeout, $enabled);
+        $timeout = $this->config->getValue('metrics.statsd_exporter.timeout', 0);
+        return new ExporterParams((string)$host, (int)$port, (float)$timeout);
     }
 
 
-    public function replaceDotInHostname(): bool
+    public function isEnabled(): bool
     {
-        return (bool)$this->config->getValue('statsd.replace_dot_in_hostname', true);
-    }
-
-
-    public function prependHostnameFromApp(): bool
-    {
-        // пока предполагается, что для проектов будет false, для сервисов - true
-        return (bool)$this->config->getApplicationValue('statsd.prepend_hostname', false);
+        return (bool)$this->config->getValue('metrics.statsd_exporter.enabled', false);
     }
 
 
     public function getAppName(): string
     {
-        return $this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown';
+        return (string)$this->config->getValue('project.name')
+            ?? (string)$this->config->getValue('name')
+            ?? 'unknown';
     }
 }

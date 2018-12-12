@@ -8,7 +8,7 @@ use TutuRu\Metrics\Exceptions\MetricsException;
 trait MetricsAwareTrait
 {
     /** @var MetricsExporterInterface */
-    private $metricsExporter;
+    protected $metricsExporter;
 
 
     public function setMetricsExporter(MetricsExporterInterface $metricsExporter)

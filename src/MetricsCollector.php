@@ -5,7 +5,7 @@ namespace TutuRu\Metrics;
 
 abstract class MetricsCollector
 {
-    private $collectedMetrics;
+    private $collectedMetrics = [];
 
     /**
      * microtime старта процесса
@@ -20,48 +20,66 @@ abstract class MetricsCollector
     private $time;
 
 
-    protected function count(string $key, int $value, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
+    abstract protected function getTimersMetricName(): string;
 
-    protected function increment(string $key, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
 
-    protected function decrement(string $key, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
+    abstract protected function getTimersMetricTags(): array;
 
-    protected function timing(string $key, float $seconds, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
 
-    protected function measureAsTiming(string $key, int $ms, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
-
-    protected function gauge(string $key, int $value, array $tags = [])
-    {
-        // save action with data in $this->>collectedMetrics
-    }
-
-    final public function getMetrics()
+    final public function getMetrics(): array
     {
         return $this->collectedMetrics;
     }
 
-    // не факт что нужен, а если и нужен, то стоит переименовать так,
-    // чтоб понятно было, что вызывается перед экспортом
-    abstract protected function addCustomMetrics(): void;
 
-    abstract protected function getTimersMetricName(string $metricName): string;
+    final public function save()
+    {
+        if (!is_null($this->time)) {
+            $this->timing($this->getTimersMetricName(), $this->time, $this->getTimersMetricTags());
+            $this->onSave();
+        }
+    }
 
-    abstract protected function getTimersMetricTags(string $metricName): string;
+
+    protected function onSave(): void
+    {
+    }
+
+
+    final protected function count(string $key, int $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['count' => [$key, $value, $tags]];
+    }
+
+
+    final protected function increment(string $key, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['increment' => [$key, $tags]];
+    }
+
+
+    final protected function decrement(string $key, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['decrement' => [$key, $tags]];
+    }
+
+
+    final protected function timing(string $key, float $seconds, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['timing' => [$key, $seconds, $tags]];
+    }
+
+
+    final protected function measureAsTiming(string $key, int $ms, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['measureAsTiming' => [$key, $ms, $tags]];
+    }
+
+
+    final protected function gauge(string $key, int $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['gauge' => [$key, $value, $tags]];
+    }
 
 
     public function startTiming(?float $timeSeconds = null): void
