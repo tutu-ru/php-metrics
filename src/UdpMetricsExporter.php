@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Metrics\MetricsExporter;
+namespace TutuRu\Metrics;
 
 use Domnikl\Statsd\Client;
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\UdpSocket;
-use TutuRu\Metrics\MetricsCollector;
-use TutuRu\Metrics\MetricsConfig;
-use TutuRu\Metrics\ExporterParams;
-use TutuRu\Metrics\MetricsExporterInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class UdpMetricsExporter implements MetricsExporterInterface
+class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterface
 {
-    /** @var ExporterParams */
+    use LoggerAwareTrait;
+
+    /** @var UdpMetricsExporterParams */
     private $params;
 
     /** @var MetricsConfig */
@@ -22,11 +22,8 @@ class UdpMetricsExporter implements MetricsExporterInterface
     /** @var Client */
     private $statsdClient;
 
-    /** @var bool|null */
-    private $isEnabled;
 
-
-    public function __construct(MetricsConfig $config, ExporterParams $params)
+    public function __construct(MetricsConfig $config, UdpMetricsExporterParams $params)
     {
         $this->params = $params;
         $this->config = $config;
@@ -36,7 +33,7 @@ class UdpMetricsExporter implements MetricsExporterInterface
     public function count(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         if ($this->isEnabled()) {
-            $this->statsdClient()->count($key, $value, $sampleRate = 1, $this->prepareTags($tags));
+            $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         }
         return $this;
     }
@@ -45,7 +42,7 @@ class UdpMetricsExporter implements MetricsExporterInterface
     public function increment(string $key, array $tags = []): MetricsExporterInterface
     {
         if ($this->isEnabled()) {
-            $this->statsdClient()->increment($key, $sampleRate = 1, $this->prepareTags($tags));
+            $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         }
         return $this;
     }
@@ -54,7 +51,7 @@ class UdpMetricsExporter implements MetricsExporterInterface
     public function decrement(string $key, array $tags = []): MetricsExporterInterface
     {
         if ($this->isEnabled()) {
-            $this->statsdClient()->decrement($key, $sampleRate = 1, $this->prepareTags($tags));
+            $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         }
         return $this;
     }
@@ -62,7 +59,7 @@ class UdpMetricsExporter implements MetricsExporterInterface
 
     public function timing(string $key, float $seconds, array $tags = []): MetricsExporterInterface
     {
-        return $this->measureAsTiming($key, (int)($seconds * 1000), $this->prepareTags($tags));
+        return $this->measureAsTiming($this->prepareKey($key), (int)($seconds * 1000), $this->prepareTags($tags));
     }
 
 
@@ -78,7 +75,7 @@ class UdpMetricsExporter implements MetricsExporterInterface
     public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         if ($this->isEnabled()) {
-            $this->statsdClient()->gauge($key, $value, $this->prepareTags($tags));
+            $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
         }
         return $this;
     }
@@ -86,8 +83,19 @@ class UdpMetricsExporter implements MetricsExporterInterface
 
     public function saveCollector(MetricsCollector $collector): MetricsExporterInterface
     {
-        // use prepareMetricsName
-        // TODO: Implement collect() method.
+        try {
+            $collector->save();
+            foreach ($collector->getMetrics() as $metric) {
+                $action = key($metric);
+                $params = current($metric);
+                call_user_func_array([$this, $action], $params);
+            }
+        } catch (\Throwable $e) {
+            if (!is_null($this->logger)) {
+                $this->logger->error("Can't save collector " . get_class($collector) . ": " . $e->__toString());
+            }
+        }
+        return $this;
     }
 
 
@@ -111,23 +119,13 @@ class UdpMetricsExporter implements MetricsExporterInterface
     }
 
 
-    protected function getParams(): ExporterParams
-    {
-        return $this->params;
-    }
-
-
     private function statsdClient(): Client
     {
         if (is_null($this->statsdClient)) {
             $connection = $this->createStatsdConnection();
             $this->statsdClient = new Client($connection);
-            if (!is_null($this->params->getNamespace())) {
-                $this->statsdClient->setNamespace($this->params->getNamespace());
-            }
             $this->statsdClient->startBatch();
         }
-
         return $this->statsdClient;
     }
 
@@ -138,9 +136,9 @@ class UdpMetricsExporter implements MetricsExporterInterface
     }
 
 
-    private function prepareMetricName(string $name): string
+    private function prepareKey(string $key): string
     {
-        return preg_replace('/[^a-zA-Z0-9_]+/', '_', $name);
+        return preg_replace('/[^a-zA-Z0-9_]+/', '_', $key);
     }
 
 
@@ -152,6 +150,6 @@ class UdpMetricsExporter implements MetricsExporterInterface
 
     private function isEnabled(): bool
     {
-        return $this->params->isEnabled();
+        return $this->config->isEnabled();
     }
 }

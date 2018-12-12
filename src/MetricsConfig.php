@@ -17,25 +17,15 @@ class MetricsConfig
     }
 
 
-    public function getExporterParameters(): ExporterParams
-    {
-        $host = $this->config->getValue('metrics.statsd_exporter.host', null, true);
-        $port = $this->config->getValue('metrics.statsd_exporter.port', null, true);
-        $timeout = $this->config->getValue('metrics.statsd_exporter.timeout', 0);
-        return new ExporterParams((string)$host, (int)$port, (float)$timeout);
-    }
-
-
     public function isEnabled(): bool
     {
-        return (bool)$this->config->getValue('metrics.statsd_exporter.enabled', false);
+        return (bool)$this->config->getValue('metrics.enabled', false);
     }
 
 
     public function getAppName(): string
     {
-        return (string)$this->config->getValue('project.name')
-            ?? (string)$this->config->getValue('name')
-            ?? 'unknown';
+        $appName = $this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown';
+        return (string)$appName;
     }
 }

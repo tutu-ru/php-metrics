@@ -102,10 +102,4 @@ abstract class MetricsCollector
     {
         $this->time = ($this->time ?? 0) + $seconds;
     }
-
-
-    public function getTiming(): ?float
-    {
-        return $this->time;
-    }
 }

@@ -1,10 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Metrics\MetricsExporter;
-
-use TutuRu\Metrics\MetricsCollector;
-use TutuRu\Metrics\MetricsExporterInterface;
+namespace TutuRu\Metrics;
 
 class NullMetricsExporter implements MetricsExporterInterface
 {

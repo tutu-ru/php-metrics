@@ -59,7 +59,12 @@ class MetricsCollectorTest extends BaseTest
         $this->assertEquals(
             [
                 ['timing' => ['metrics_main', 500, ['env' => 'test']]],
-                ['gauge' => ['metrics_custom', 50, []]],
+                ['count' => ['metrics_custom_count', 50, []]],
+                ['increment' => ['metrics_custom_inc', []]],
+                ['decrement' => ['metrics_custom_dec', []]],
+                ['timing' => ['metrics_custom_timing', 500, []]],
+                ['measureAsTiming' => ['metrics_custom_as_timing', 5, []]],
+                ['gauge' => ['metrics_custom_gauge', 2, []]],
             ],
             $collector->getMetrics()
         );

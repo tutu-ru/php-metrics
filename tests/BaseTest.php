@@ -15,6 +15,6 @@ abstract class BaseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->config = JsonConfigFactory::createConfig(__DIR__ . '/config/application.json');
+        $this->config = JsonConfigFactory::createConfig(__DIR__ . '/config/app.json', __DIR__ . '/config/env.json');
     }
 }
