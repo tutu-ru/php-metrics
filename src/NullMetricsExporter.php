@@ -25,11 +25,6 @@ class NullMetricsExporter implements MetricsExporterInterface
         return $this;
     }
 
-    public function measureAsTiming(string $key, int $ms, array $tags = []): MetricsExporterInterface
-    {
-        return $this;
-    }
-
     public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         return $this;

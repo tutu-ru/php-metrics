@@ -63,7 +63,6 @@ class MetricsCollectorTest extends BaseTest
                 ['increment' => ['metrics_custom_inc', []]],
                 ['decrement' => ['metrics_custom_dec', []]],
                 ['timing' => ['metrics_custom_timing', 500, []]],
-                ['measureAsTiming' => ['metrics_custom_as_timing', 5, []]],
                 ['gauge' => ['metrics_custom_gauge', 2, []]],
             ],
             $collector->getMetrics()

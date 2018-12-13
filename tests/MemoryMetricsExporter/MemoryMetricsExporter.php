@@ -18,8 +18,9 @@ class MemoryMetricsExporter extends UdpMetricsExporter
 
     public function __construct(ConfigContainer $config)
     {
+        $metricsConfig = new MetricsConfig($config);
         $fakeUdpMetricsExporterParams = new UdpMetricsExporterParams('', 0, 0);
-        parent::__construct(new MetricsConfig($config), $fakeUdpMetricsExporterParams);
+        parent::__construct($metricsConfig->getAppName(), $fakeUdpMetricsExporterParams);
     }
 
 

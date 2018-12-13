@@ -70,12 +70,6 @@ abstract class MetricsCollector
     }
 
 
-    final protected function measureAsTiming(string $key, int $ms, array $tags = [])
-    {
-        $this->collectedMetrics[] = ['measureAsTiming' => [$key, $ms, $tags]];
-    }
-
-
     final protected function gauge(string $key, int $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['gauge' => [$key, $value, $tags]];

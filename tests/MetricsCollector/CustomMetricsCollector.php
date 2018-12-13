@@ -11,7 +11,6 @@ class CustomMetricsCollector extends BaseMetricsCollector
         $this->increment('metrics_custom_inc');
         $this->decrement('metrics_custom_dec');
         $this->timing('metrics_custom_timing', 500);
-        $this->measureAsTiming('metrics_custom_as_timing', 5);
         $this->gauge('metrics_custom_gauge', 2);
     }
 

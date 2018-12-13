@@ -101,20 +101,6 @@ class MetricsExporterTest extends BaseTest
     }
 
 
-    public function testMeasureAsTiming()
-    {
-        $exporter = $this->getMetricsExporter();
-        $exporter->measureAsTiming('test', 20000);
-        $exporter->measureAsTiming('test', 45000);
-        $exporter->export();
-
-        $this->assertEquals(
-            ['test:20000|ms|#app:unittest', 'test:45000|ms|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
-    }
-
-
     public function testGauge()
     {
         $exporter = $this->getMetricsExporter();
@@ -145,7 +131,6 @@ class MetricsExporterTest extends BaseTest
                 'metrics_custom_inc:1|c|#app:unittest',
                 'metrics_custom_dec:-1|c|#app:unittest',
                 'metrics_custom_timing:500000|ms|#app:unittest',
-                'metrics_custom_as_timing:5|ms|#app:unittest',
                 'metrics_custom_gauge:2|g|#app:unittest',
             ],
             $exporter->getRawExportedMetrics()

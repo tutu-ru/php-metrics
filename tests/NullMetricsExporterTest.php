@@ -17,7 +17,6 @@ class NullMetricsExporterTest extends BaseTest
         $this->assertInstanceOf(NullMetricsExporter::class, $exporter->increment('c'));
         $this->assertInstanceOf(NullMetricsExporter::class, $exporter->decrement('c'));
         $this->assertInstanceOf(NullMetricsExporter::class, $exporter->timing('t', 1));
-        $this->assertInstanceOf(NullMetricsExporter::class, $exporter->measureAsTiming('a', 1));
         $this->assertInstanceOf(NullMetricsExporter::class, $exporter->saveCollector(new SimpleMetricsCollector()));
 
         $exporter->export();

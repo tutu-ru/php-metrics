@@ -13,70 +13,55 @@ class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterfa
 {
     use LoggerAwareTrait;
 
+    /** @var string */
+    private $appName;
+
     /** @var UdpMetricsExporterParams */
     private $params;
-
-    /** @var MetricsConfig */
-    private $config;
 
     /** @var Client */
     private $statsdClient;
 
 
-    public function __construct(MetricsConfig $config, UdpMetricsExporterParams $params)
+    public function __construct(string $appName, UdpMetricsExporterParams $params)
     {
+        $this->appName = $appName;
         $this->params = $params;
-        $this->config = $config;
     }
 
 
     public function count(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
-        }
+        $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
     public function increment(string $key, array $tags = []): MetricsExporterInterface
     {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
-        }
+        $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
     public function decrement(string $key, array $tags = []): MetricsExporterInterface
     {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
-        }
+        $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
     public function timing(string $key, float $seconds, array $tags = []): MetricsExporterInterface
     {
-        return $this->measureAsTiming($this->prepareKey($key), (int)($seconds * 1000), $this->prepareTags($tags));
-    }
-
-
-    public function measureAsTiming(string $key, int $ms, array $tags = []): MetricsExporterInterface
-    {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->timing($key, $ms, $sampleRate = 1, $this->prepareTags($tags));
-        }
+        $ms = (int)($seconds * 1000);
+        $this->statsdClient()->timing($this->prepareKey($key), $ms, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
     public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
-        }
+        $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
         return $this;
     }
 
@@ -101,10 +86,8 @@ class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterfa
 
     public function export(): void
     {
-        if ($this->isEnabled()) {
-            $this->statsdClient()->endBatch();
-            $this->resetClient();
-        }
+        $this->statsdClient()->endBatch();
+        $this->resetClient();
     }
 
 
@@ -144,12 +127,6 @@ class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterfa
 
     private function prepareTags(array $tags): array
     {
-        return array_merge($tags, ['app' => $this->config->getAppName()]);
-    }
-
-
-    private function isEnabled(): bool
-    {
-        return $this->config->isEnabled();
+        return array_merge($tags, ['app' => $this->appName]);
     }
 }
