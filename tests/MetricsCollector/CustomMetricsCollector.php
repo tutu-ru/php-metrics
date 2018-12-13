@@ -5,13 +5,22 @@ namespace TutuRu\Tests\Metrics\MetricsCollector;
 
 class CustomMetricsCollector extends BaseMetricsCollector
 {
-    protected function saveCustomMetrics(): void
+    protected function onSave(): void
     {
-        $this->getSession()->gauge($this->glueNamespaces(['simple', 'metrics', 'custom']), 50);
+        $this->count('metrics_custom_count', 50);
+        $this->increment('metrics_custom_inc');
+        $this->decrement('metrics_custom_dec');
+        $this->timing('metrics_custom_timing', 500);
+        $this->gauge('metrics_custom_gauge', 2);
     }
 
-    protected function getTimingKey(): string
+    protected function getTimersMetricName(): string
     {
-        return $this->glueNamespaces(['simple', 'metrics', 'collector']);
+        return 'metrics_main';
+    }
+
+    protected function getTimersMetricTags(): array
+    {
+        return ['env' => 'test'];
     }
 }

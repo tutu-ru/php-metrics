@@ -1,0 +1,10 @@
+{
+  "name": "unittest",
+  "metrics": {
+    "enabled": true,
+    "exporter": {
+      "host": "localhost",
+      "port": 8155
+    }
+  }
+}

@@ -5,12 +5,13 @@ namespace TutuRu\Tests\Metrics\MetricsCollector;
 
 class SimpleMetricsCollector extends BaseMetricsCollector
 {
-    protected function saveCustomMetrics(): void
+    protected function getTimersMetricName(): string
     {
+        return self::class;
     }
 
-    protected function getTimingKey(): string
+    protected function getTimersMetricTags(): array
     {
-        return $this->glueNamespaces(['simple', 'metrics', 'collector']);
+        return ['debug' => 1];
     }
 }
