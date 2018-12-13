@@ -77,7 +77,7 @@ class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterfa
             }
         } catch (\Throwable $e) {
             if (!is_null($this->logger)) {
-                $this->logger->error("Can't save collector " . get_class($collector) . ": " . $e->__toString());
+                $this->logger->error("Can't save collector " . get_class($collector) . ": {$e}");
             }
         }
         return $this;
