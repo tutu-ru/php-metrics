@@ -78,11 +78,24 @@ class MetricsCollectorTest extends BaseTest
         $collector->save();
     }
 
+
     public function testExceptionInGetTimingKey()
     {
         $this->expectException(\Exception::class);
         $collector = new BrokenNameMetricsCollector();
         $collector->addTiming(500);
         $collector->save();
+    }
+
+
+    public function testSecondSave()
+    {
+        $collector = new SimpleMetricsCollector();
+        $collector->startTiming();
+        $collector->endTiming();
+        $collector->save();
+        $collector->save();
+
+        $this->assertCount(2, $collector->getMetrics());
     }
 }

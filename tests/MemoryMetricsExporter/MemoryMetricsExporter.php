@@ -30,6 +30,23 @@ class MemoryMetricsExporter extends UdpMetricsExporter
     }
 
 
+    /**
+     * @param string|null $name
+     * @return MemoryMetric[]
+     */
+    public function getExportedMetrics(?string $name = null): array
+    {
+        $metrics = [];
+        foreach ($this->getRawExportedMetrics() as $rawExportedMetric) {
+            $metric = MemoryMetric::createFromRawString($rawExportedMetric);
+            if (is_null($name) || $name === $metric->getName()) {
+                $metrics[] = $metric;
+            }
+        }
+        return $metrics;
+    }
+
+
     public function getLastCreatedConnection(): ?InMemory
     {
         return $this->lastCreatedConnection;

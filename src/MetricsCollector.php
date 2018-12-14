@@ -79,6 +79,7 @@ abstract class MetricsCollector
     public function startTiming(?float $timeSeconds = null): void
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
+        $this->time = null;
     }
 
 
