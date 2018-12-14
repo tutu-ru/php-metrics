@@ -36,6 +36,7 @@ abstract class MetricsCollector
     {
         if (!is_null($this->time)) {
             $this->timing($this->getTimersMetricName(), $this->time, $this->getTimersMetricTags());
+            $this->time = null;
             $this->onSave();
         }
     }
