@@ -96,6 +96,6 @@ class MetricsCollectorTest extends BaseTest
         $collector->save();
         $collector->save();
 
-        $this->assertCount(1, $collector->getMetrics());
+        $this->assertCount(2, $collector->getMetrics());
     }
 }
