@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Metrics\MetricsCollector;
+use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetric;
 use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetricsExporter;
 use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetricsExporterFactory;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
@@ -52,10 +53,9 @@ class MetricsExporterTest extends BaseTest
         $exporter->count('counter', 20);
         $exporter->export();
 
-        $this->assertEquals(
-            ['counter:10|c|#app:unittest', 'counter:20|c|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
+        $this->assertCount(2, $exporter->getExportedMetrics());
+        $this->assertMetric($exporter->getExportedMetrics()[0], 'counter', 10, 'c', ['app' => 'unittest']);
+        $this->assertMetric($exporter->getExportedMetrics()[1], 'counter', 20, 'c', ['app' => 'unittest']);
     }
 
 
@@ -66,10 +66,9 @@ class MetricsExporterTest extends BaseTest
         $exporter->increment('counter');
         $exporter->export();
 
-        $this->assertEquals(
-            ['counter:1|c|#app:unittest', 'counter:1|c|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
+        $this->assertCount(2, $exporter->getExportedMetrics());
+        $this->assertMetric($exporter->getExportedMetrics()[0], 'counter', 1, 'c', ['app' => 'unittest']);
+        $this->assertMetric($exporter->getExportedMetrics()[1], 'counter', 1, 'c', ['app' => 'unittest']);
     }
 
 
@@ -80,10 +79,9 @@ class MetricsExporterTest extends BaseTest
         $exporter->decrement('counter');
         $exporter->export();
 
-        $this->assertEquals(
-            ['counter:-1|c|#app:unittest', 'counter:-1|c|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
+        $this->assertCount(2, $exporter->getExportedMetrics());
+        $this->assertMetric($exporter->getExportedMetrics()[0], 'counter', -1, 'c', ['app' => 'unittest']);
+        $this->assertMetric($exporter->getExportedMetrics()[1], 'counter', -1, 'c', ['app' => 'unittest']);
     }
 
 
@@ -94,10 +92,9 @@ class MetricsExporterTest extends BaseTest
         $exporter->timing('test', 40);
         $exporter->export();
 
-        $this->assertEquals(
-            ['test:25000|ms|#app:unittest', 'test:40000|ms|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
+        $this->assertCount(2, $exporter->getExportedMetrics());
+        $this->assertMetric($exporter->getExportedMetrics()[0], 'test', 25000, 'ms', ['app' => 'unittest']);
+        $this->assertMetric($exporter->getExportedMetrics()[1], 'test', 40000, 'ms', ['app' => 'unittest']);
     }
 
 
@@ -108,10 +105,9 @@ class MetricsExporterTest extends BaseTest
         $exporter->gauge('gauge', 4);
         $exporter->export();
 
-        $this->assertEquals(
-            ['gauge:2|g|#app:unittest', 'gauge:4|g|#app:unittest'],
-            $exporter->getRawExportedMetrics()
-        );
+        $this->assertCount(2, $exporter->getExportedMetrics());
+        $this->assertMetric($exporter->getExportedMetrics()[0], 'gauge', 2, 'g', ['app' => 'unittest']);
+        $this->assertMetric($exporter->getExportedMetrics()[1], 'gauge', 4, 'g', ['app' => 'unittest']);
     }
 
 
@@ -124,16 +120,48 @@ class MetricsExporterTest extends BaseTest
         $exporter->saveCollector($collector);
         $exporter->export();
 
-        $this->assertEquals(
-            [
-                'metrics_main:500000|ms|#env:test,app:unittest',
-                'metrics_custom_count:50|c|#app:unittest',
-                'metrics_custom_inc:1|c|#app:unittest',
-                'metrics_custom_dec:-1|c|#app:unittest',
-                'metrics_custom_timing:500000|ms|#app:unittest',
-                'metrics_custom_gauge:2|g|#app:unittest',
-            ],
-            $exporter->getRawExportedMetrics()
+        $this->assertCount(6, $exporter->getExportedMetrics());
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_main')[0],
+            'metrics_main',
+            500000,
+            'ms',
+            ['app' => 'unittest', 'env' => 'test']
+        );
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_custom_count')[0],
+            'metrics_custom_count',
+            50,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_custom_inc')[0],
+            'metrics_custom_inc',
+            1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_custom_dec')[0],
+            'metrics_custom_dec',
+            -1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_custom_timing')[0],
+            'metrics_custom_timing',
+            500000,
+            'ms',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporter->getExportedMetrics('metrics_custom_gauge')[0],
+            'metrics_custom_gauge',
+            2,
+            'g',
+            ['app' => 'unittest']
         );
     }
 
@@ -149,7 +177,7 @@ class MetricsExporterTest extends BaseTest
         $exporter->saveCollector($collector);
         $exporter->export();
 
-        $this->assertEquals([], $exporter->getRawExportedMetrics());
+        $this->assertEquals([], $exporter->getExportedMetrics());
     }
 
 
@@ -174,8 +202,8 @@ class MetricsExporterTest extends BaseTest
             ->gauge('gauge', 20, ['test' => 'phpunit'])
             ->export();
 
-        foreach ($exporter->getRawExportedMetrics() as $message) {
-            $this->assertStringEndsWith("#test:phpunit,app:unittest", $message);
+        foreach ($exporter->getExportedMetrics() as $metric) {
+            $this->assertEquals(['test' => 'phpunit', 'app' => 'unittest'], $metric->getTags());
         }
     }
 
@@ -191,8 +219,17 @@ class MetricsExporterTest extends BaseTest
             ->gauge('test-gauge', 20)
             ->export();
 
-        foreach ($exporter->getRawExportedMetrics() as $message) {
-            $this->assertStringStartsWith("test_", $message);
+        foreach ($exporter->getExportedMetrics() as $metric) {
+            $this->assertStringStartsWith("test_", $metric->getName());
         }
+    }
+
+
+    protected function assertMetric(MemoryMetric $metric, $name, $value, $unit, $tags)
+    {
+        $this->assertEquals($name, $metric->getName());
+        $this->assertEquals($value, $metric->getValue());
+        $this->assertEquals($unit, $metric->getUnit());
+        $this->assertEquals($tags, $metric->getTags());
     }
 }
