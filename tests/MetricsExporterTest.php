@@ -111,13 +111,14 @@ class MetricsExporterTest extends BaseTest
     }
 
 
-    public function testSaveCollector()
+    public function testExportCollector()
     {
         $exporter = $this->getMetricsExporter();
 
         $collector = new CustomMetricsCollector();
         $collector->addTiming(500);
-        $collector->export($exporter);
+        $collector->save();
+        $collector->sendTo($exporter);
 
         $exporter->export();
         $this->assertCount(6, $exporter->getExportedMetrics());
@@ -166,16 +167,28 @@ class MetricsExporterTest extends BaseTest
     }
 
 
+    public function testExportCollectorWithoutSave()
+    {
+        $exporter = $this->getMetricsExporter();
+
+        $collector = new CustomMetricsCollector();
+        $collector->addTiming(500);
+        $collector->sendTo($exporter);
+
+        $exporter->export();
+        $this->assertCount(0, $exporter->getExportedMetrics());
+    }
+
     /**
      * @dataProvider collectorWithExceptionDataProvider
      * @param MetricsCollector $collector
      */
-    public function testSaveCollectorWithExceptionInTimers(MetricsCollector $collector)
+    public function testExportCollectorWithExceptionInTimers(MetricsCollector $collector)
     {
         $exporter = $this->getMetricsExporter();
 
         $collector->addTiming(500);
-        $collector->export($exporter);
+        $collector->sendTo($exporter);
 
         $exporter->export();
         $this->assertEquals([], $exporter->getExportedMetrics());

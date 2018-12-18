@@ -47,6 +47,23 @@ abstract class MetricsCollector implements LoggerAwareInterface
     }
 
 
+    public function sendTo(MetricsExporterInterface $exporter)
+    {
+        try {
+            foreach ($this->getMetrics() as $metric) {
+                $action = key($metric);
+                $params = current($metric);
+                call_user_func_array([$exporter, $action], $params);
+            }
+        } catch (\Throwable $e) {
+            if (!is_null($this->logger)) {
+                $this->logger->error("Can't save collector " . get_class($this) . ": {$e}");
+            }
+        }
+        return $this;
+    }
+
+
     protected function onSave(): void
     {
     }
@@ -86,24 +103,6 @@ abstract class MetricsCollector implements LoggerAwareInterface
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
         $this->time = null;
-    }
-
-
-    public function export(MetricsExporterInterface $exporter)
-    {
-        try {
-            $this->save();
-            foreach ($this->getMetrics() as $metric) {
-                $action = key($metric);
-                $params = current($metric);
-                call_user_func_array([$exporter, $action], $params);
-            }
-        } catch (\Throwable $e) {
-            if (!is_null($this->logger)) {
-                $this->logger->error("Can't save collector " . get_class($this) . ": {$e}");
-            }
-        }
-        return $this;
     }
 
 
