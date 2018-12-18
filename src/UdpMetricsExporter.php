@@ -105,6 +105,10 @@ class UdpMetricsExporter implements MetricsExporterInterface
 
     private function prepareTags(array $tags): array
     {
-        return array_merge($tags, ['app' => $this->appName]);
+        $preparedTags = ['app' => $this->appName];
+        foreach ($tags as $k => $v) {
+            $preparedTags[$this->prepareKey($k)] = $v;
+        }
+        return $preparedTags;
     }
 }
