@@ -3,8 +3,14 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-abstract class MetricsCollector
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
+abstract class MetricsCollector implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+
     private $collectedMetrics = [];
 
     /**
@@ -80,6 +86,24 @@ abstract class MetricsCollector
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
         $this->time = null;
+    }
+
+
+    public function export(MetricsExporterInterface $exporter)
+    {
+        try {
+            $this->save();
+            foreach ($this->getMetrics() as $metric) {
+                $action = key($metric);
+                $params = current($metric);
+                call_user_func_array([$exporter, $action], $params);
+            }
+        } catch (\Throwable $e) {
+            if (!is_null($this->logger)) {
+                $this->logger->error("Can't save collector " . get_class($this) . ": {$e}");
+            }
+        }
+        return $this;
     }
 
 

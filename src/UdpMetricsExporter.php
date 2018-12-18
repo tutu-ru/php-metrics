@@ -6,13 +6,9 @@ namespace TutuRu\Metrics;
 use Domnikl\Statsd\Client;
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\UdpSocket;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 
-class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterface
+class UdpMetricsExporter implements MetricsExporterInterface
 {
-    use LoggerAwareTrait;
-
     /** @var string */
     private $appName;
 
@@ -62,24 +58,6 @@ class UdpMetricsExporter implements MetricsExporterInterface, LoggerAwareInterfa
     public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
     {
         $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
-        return $this;
-    }
-
-
-    public function saveCollector(MetricsCollector $collector): MetricsExporterInterface
-    {
-        try {
-            $collector->save();
-            foreach ($collector->getMetrics() as $metric) {
-                $action = key($metric);
-                $params = current($metric);
-                call_user_func_array([$this, $action], $params);
-            }
-        } catch (\Throwable $e) {
-            if (!is_null($this->logger)) {
-                $this->logger->error("Can't save collector " . get_class($collector) . ": {$e}");
-            }
-        }
         return $this;
     }
 

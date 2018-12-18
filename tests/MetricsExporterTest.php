@@ -113,13 +113,13 @@ class MetricsExporterTest extends BaseTest
 
     public function testSaveCollector()
     {
+        $exporter = $this->getMetricsExporter();
+
         $collector = new CustomMetricsCollector();
         $collector->addTiming(500);
+        $collector->export($exporter);
 
-        $exporter = $this->getMetricsExporter();
-        $exporter->saveCollector($collector);
         $exporter->export();
-
         $this->assertCount(6, $exporter->getExportedMetrics());
         $this->assertMetric(
             $exporter->getExportedMetrics('metrics_main')[0],
@@ -172,11 +172,12 @@ class MetricsExporterTest extends BaseTest
      */
     public function testSaveCollectorWithExceptionInTimers(MetricsCollector $collector)
     {
-        $collector->addTiming(500);
         $exporter = $this->getMetricsExporter();
-        $exporter->saveCollector($collector);
-        $exporter->export();
 
+        $collector->addTiming(500);
+        $collector->export($exporter);
+
+        $exporter->export();
         $this->assertEquals([], $exporter->getExportedMetrics());
     }
 

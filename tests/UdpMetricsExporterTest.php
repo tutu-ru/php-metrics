@@ -5,7 +5,6 @@ namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Metrics\UdpMetricsExporter;
 use TutuRu\Metrics\UdpMetricsExporterFactory;
-use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
 
 class UdpMetricsExporterTest extends BaseTest
 {
@@ -18,7 +17,6 @@ class UdpMetricsExporterTest extends BaseTest
         $this->assertInstanceOf(UdpMetricsExporter::class, $exporter->increment('c'));
         $this->assertInstanceOf(UdpMetricsExporter::class, $exporter->decrement('c'));
         $this->assertInstanceOf(UdpMetricsExporter::class, $exporter->timing('t', 1));
-        $this->assertInstanceOf(UdpMetricsExporter::class, $exporter->saveCollector(new SimpleMetricsCollector()));
 
         $exporter->export();
     }
