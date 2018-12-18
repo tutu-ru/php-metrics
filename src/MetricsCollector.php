@@ -25,6 +25,9 @@ abstract class MetricsCollector implements LoggerAwareInterface
      */
     private $time;
 
+    /** @var bool */
+    private $wasSaved = false;
+
 
     abstract protected function getTimersMetricName(): string;
 
@@ -38,29 +41,29 @@ abstract class MetricsCollector implements LoggerAwareInterface
     }
 
 
-    final public function save()
+    public function sendTo(MetricsExporterInterface $exporter)
     {
-        if (!is_null($this->time)) {
-            $this->timing($this->getTimersMetricName(), $this->time, $this->getTimersMetricTags());
-            $this->onSave();
+        $this->save();
+        foreach ($this->getMetrics() as $metric) {
+            $action = key($metric);
+            $params = current($metric);
+            call_user_func_array([$exporter, $action], $params);
         }
     }
 
 
-    public function sendTo(MetricsExporterInterface $exporter)
+    private function save()
     {
-        try {
-            foreach ($this->getMetrics() as $metric) {
-                $action = key($metric);
-                $params = current($metric);
-                call_user_func_array([$exporter, $action], $params);
-            }
-        } catch (\Throwable $e) {
-            if (!is_null($this->logger)) {
-                $this->logger->error("Can't save collector " . get_class($this) . ": {$e}");
-            }
+        if ($this->wasSaved) {
+            return;
         }
-        return $this;
+
+        if (!is_null($this->time)) {
+            $this->timing($this->getTimersMetricName(), $this->time, $this->getTimersMetricTags());
+        }
+        $this->onSave();
+
+        $this->wasSaved = true;
     }
 
 
