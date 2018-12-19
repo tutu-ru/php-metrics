@@ -30,11 +30,6 @@ class NullMetricsExporter implements MetricsExporterInterface
         return $this;
     }
 
-    public function saveCollector(MetricsCollector $collector): MetricsExporterInterface
-    {
-        return $this;
-    }
-
     public function export(): void
     {
     }

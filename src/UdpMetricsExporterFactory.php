@@ -13,11 +13,7 @@ class UdpMetricsExporterFactory
         try {
             $metricsConfig = new MetricsConfig($config);
             if ($metricsConfig->isEnabled()) {
-                $exporter = new UdpMetricsExporter($metricsConfig->getAppName(), self::getExporterParameters($config));
-                if (!is_null($logger)) {
-                    $exporter->setLogger($logger);
-                }
-                return $exporter;
+                return new UdpMetricsExporter($metricsConfig->getAppName(), self::getExporterParameters($config));
             } else {
                 return new NullMetricsExporter();
             }

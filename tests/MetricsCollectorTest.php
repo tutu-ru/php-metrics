@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
+use TutuRu\Metrics\NullMetricsExporter;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenNameMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
@@ -15,7 +16,7 @@ class MetricsCollectorTest extends BaseTest
         $collector = new SimpleMetricsCollector();
         $collector->startTiming();
         $collector->endTiming();
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
 
         $metrics = $collector->getMetrics();
         $this->assertCount(1, $metrics);
@@ -29,7 +30,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new SimpleMetricsCollector();
         $collector->endTiming();
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
 
         $this->assertEquals([], $collector->getMetrics());
     }
@@ -39,7 +40,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new SimpleMetricsCollector();
         $collector->addTiming(500);
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
 
         $this->assertEquals(
             [
@@ -54,7 +55,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new CustomMetricsCollector();
         $collector->addTiming(500);
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
 
         $this->assertEquals(
             [
@@ -75,7 +76,7 @@ class MetricsCollectorTest extends BaseTest
         $this->expectException(\Exception::class);
         $collector = new BrokenCustomMetricsCollector();
         $collector->addTiming(500);
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
     }
 
 
@@ -84,7 +85,7 @@ class MetricsCollectorTest extends BaseTest
         $this->expectException(\Exception::class);
         $collector = new BrokenNameMetricsCollector();
         $collector->addTiming(500);
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
     }
 
 
@@ -93,9 +94,9 @@ class MetricsCollectorTest extends BaseTest
         $collector = new SimpleMetricsCollector();
         $collector->startTiming();
         $collector->endTiming();
-        $collector->save();
-        $collector->save();
+        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendTo(new NullMetricsExporter());
 
-        $this->assertCount(2, $collector->getMetrics());
+        $this->assertCount(1, $collector->getMetrics());
     }
 }

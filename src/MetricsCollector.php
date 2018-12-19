@@ -3,8 +3,14 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-abstract class MetricsCollector
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
+abstract class MetricsCollector implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+
     private $collectedMetrics = [];
 
     /**
@@ -19,6 +25,9 @@ abstract class MetricsCollector
      */
     private $time;
 
+    /** @var bool */
+    private $wasSaved = false;
+
 
     abstract protected function getTimersMetricName(): string;
 
@@ -32,12 +41,29 @@ abstract class MetricsCollector
     }
 
 
-    final public function save()
+    public function sendTo(MetricsExporterInterface $exporter)
     {
+        $this->save();
+        foreach ($this->getMetrics() as $metric) {
+            $action = key($metric);
+            $params = current($metric);
+            call_user_func_array([$exporter, $action], $params);
+        }
+    }
+
+
+    private function save()
+    {
+        if ($this->wasSaved) {
+            return;
+        }
+
         if (!is_null($this->time)) {
             $this->timing($this->getTimersMetricName(), $this->time, $this->getTimersMetricTags());
-            $this->onSave();
         }
+        $this->onSave();
+
+        $this->wasSaved = true;
     }
 
 
