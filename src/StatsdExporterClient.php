@@ -7,47 +7,47 @@ use Domnikl\Statsd\Client;
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\UdpSocket;
 
-class UdpMetricsExporter implements MetricsExporterInterface
+class StatsdExporterClient implements StatsdExporterClientInterface
 {
     /** @var string */
     private $appName;
 
-    /** @var UdpMetricsExporterParams */
+    /** @var StatsdExporterClientParams */
     private $params;
 
     /** @var Client */
     private $statsdClient;
 
 
-    public function __construct(string $appName, UdpMetricsExporterParams $params)
+    public function __construct(string $appName, StatsdExporterClientParams $params)
     {
         $this->appName = $appName;
         $this->params = $params;
     }
 
 
-    public function count(string $key, int $value, array $tags = []): MetricsExporterInterface
+    public function count(string $key, int $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
-    public function increment(string $key, array $tags = []): MetricsExporterInterface
+    public function increment(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
-    public function decrement(string $key, array $tags = []): MetricsExporterInterface
+    public function decrement(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }
 
 
-    public function timing(string $key, float $seconds, array $tags = []): MetricsExporterInterface
+    public function timing(string $key, float $seconds, array $tags = []): StatsdExporterClientInterface
     {
         $ms = (int)($seconds * 1000);
         $this->statsdClient()->timing($this->prepareKey($key), $ms, $sampleRate = 1, $this->prepareTags($tags));
@@ -55,14 +55,14 @@ class UdpMetricsExporter implements MetricsExporterInterface
     }
 
 
-    public function gauge(string $key, int $value, array $tags = []): MetricsExporterInterface
+    public function gauge(string $key, int $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
         return $this;
     }
 
 
-    public function export(): void
+    public function save(): void
     {
         $this->statsdClient()->endBatch();
         $this->resetClient();

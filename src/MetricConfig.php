@@ -5,7 +5,7 @@ namespace TutuRu\Metrics;
 
 use TutuRu\Config\ConfigContainer;
 
-class MetricsConfig
+class MetricConfig
 {
     /** @var ConfigContainer */
     private $config;

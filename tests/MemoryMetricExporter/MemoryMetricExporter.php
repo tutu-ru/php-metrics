@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics\MemoryMetricsExporter;
+namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
 
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\InMemory;
 use TutuRu\Config\ConfigContainer;
-use TutuRu\Metrics\MetricsConfig;
-use TutuRu\Metrics\UdpMetricsExporter;
-use TutuRu\Metrics\UdpMetricsExporterParams;
+use TutuRu\Metrics\MetricConfig;
+use TutuRu\Metrics\StatsdExporterClient;
+use TutuRu\Metrics\StatsdExporterClientParams;
 
-class MemoryMetricsExporter extends UdpMetricsExporter
+class MemoryMetricExporter extends StatsdExporterClient
 {
     /** @var InMemory */
     private $lastCreatedConnection;
@@ -18,8 +18,8 @@ class MemoryMetricsExporter extends UdpMetricsExporter
 
     public function __construct(ConfigContainer $config)
     {
-        $metricsConfig = new MetricsConfig($config);
-        $fakeUdpMetricsExporterParams = new UdpMetricsExporterParams('', 0, 0);
+        $metricsConfig = new MetricConfig($config);
+        $fakeUdpMetricsExporterParams = new StatsdExporterClientParams('', 0, 0);
         parent::__construct($metricsConfig->getAppName(), $fakeUdpMetricsExporterParams);
     }
 

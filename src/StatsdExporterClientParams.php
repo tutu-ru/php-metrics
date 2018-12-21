@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-class UdpMetricsExporterParams
+class StatsdExporterClientParams
 {
     /** @var string */
     private $host;
