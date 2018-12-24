@@ -16,6 +16,7 @@ class NullStatsdExporterClientTest extends BaseTest
         $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient->increment('c'));
         $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient->decrement('c'));
         $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient->timing('t', 1));
+        $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient->summary('s', 1));
 
         $statsdExporterClient->save();
     }

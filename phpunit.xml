@@ -8,7 +8,7 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
-            <directory suffix=".php">./tests/MemoryMetricsExporter</directory>
+            <directory suffix=".php">./tests/MemoryMetricExporter</directory>
         </whitelist>
     </filter>
 

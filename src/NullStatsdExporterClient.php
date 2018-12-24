@@ -30,6 +30,11 @@ class NullStatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
+    public function summary(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    {
+        return $this;
+    }
+
     public function save(): void
     {
     }

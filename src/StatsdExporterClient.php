@@ -62,6 +62,13 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     }
 
 
+    public function summary(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    {
+        $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
+        return $this;
+    }
+
+
     public function save(): void
     {
         $this->statsdClient()->endBatch();

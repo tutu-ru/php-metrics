@@ -15,5 +15,7 @@ interface StatsdExporterClientInterface
 
     public function gauge(string $key, int $value, array $tags = []): StatsdExporterClientInterface;
 
+    public function summary(string $key, int $value, array $tags = []): StatsdExporterClientInterface;
+
     public function save(): void;
 }

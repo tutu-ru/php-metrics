@@ -102,6 +102,12 @@ abstract class MetricCollector implements LoggerAwareInterface
     }
 
 
+    final protected function summary(string $key, int $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['summary' => [$key, $value, $tags]];
+    }
+
+
     public function startTiming(?float $timeSeconds = null): void
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
