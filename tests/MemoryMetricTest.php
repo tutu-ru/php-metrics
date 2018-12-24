@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetric;
+use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
 
 class MemoryMetricTest extends BaseTest
 {

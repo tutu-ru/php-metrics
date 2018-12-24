@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics\MemoryMetricsExporter;
+namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
 
 class MemoryMetric
 {

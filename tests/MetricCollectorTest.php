@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Metrics\NullMetricsExporter;
+use TutuRu\Metrics\NullStatsdExporterClient;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenNameMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\SimpleMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\CustomMetricsCollector;
 
-class MetricsCollectorTest extends BaseTest
+class MetricCollectorTest extends BaseTest
 {
     public function testTimingMetrics()
     {
         $collector = new SimpleMetricsCollector();
         $collector->startTiming();
         $collector->endTiming();
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
 
         $metrics = $collector->getMetrics();
         $this->assertCount(1, $metrics);
@@ -30,7 +30,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new SimpleMetricsCollector();
         $collector->endTiming();
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
 
         $this->assertEquals([], $collector->getMetrics());
     }
@@ -40,7 +40,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new SimpleMetricsCollector();
         $collector->addTiming(500);
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
 
         $this->assertEquals(
             [
@@ -55,7 +55,7 @@ class MetricsCollectorTest extends BaseTest
     {
         $collector = new CustomMetricsCollector();
         $collector->addTiming(500);
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
 
         $this->assertEquals(
             [
@@ -65,6 +65,7 @@ class MetricsCollectorTest extends BaseTest
                 ['decrement' => ['metrics_custom_dec', []]],
                 ['timing' => ['metrics_custom_timing', 500, []]],
                 ['gauge' => ['metrics_custom_gauge', 2, []]],
+                ['summary' => ['metrics_custom_summary', 500, []]],
             ],
             $collector->getMetrics()
         );
@@ -76,7 +77,7 @@ class MetricsCollectorTest extends BaseTest
         $this->expectException(\Exception::class);
         $collector = new BrokenCustomMetricsCollector();
         $collector->addTiming(500);
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
     }
 
 
@@ -85,7 +86,7 @@ class MetricsCollectorTest extends BaseTest
         $this->expectException(\Exception::class);
         $collector = new BrokenNameMetricsCollector();
         $collector->addTiming(500);
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
     }
 
 
@@ -94,8 +95,8 @@ class MetricsCollectorTest extends BaseTest
         $collector = new SimpleMetricsCollector();
         $collector->startTiming();
         $collector->endTiming();
-        $collector->sendTo(new NullMetricsExporter());
-        $collector->sendTo(new NullMetricsExporter());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
+        $collector->sendToStatsdExporter(new NullStatsdExporterClient());
 
         $this->assertCount(1, $collector->getMetrics());
     }

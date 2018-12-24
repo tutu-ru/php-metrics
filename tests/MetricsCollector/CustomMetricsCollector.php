@@ -12,6 +12,7 @@ class CustomMetricsCollector extends BaseMetricsCollector
         $this->decrement('metrics_custom_dec');
         $this->timing('metrics_custom_timing', 500);
         $this->gauge('metrics_custom_gauge', 2);
+        $this->summary('metrics_custom_summary', 500);
     }
 
     protected function getTimersMetricName(): string

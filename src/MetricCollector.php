@@ -6,7 +6,7 @@ namespace TutuRu\Metrics;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-abstract class MetricsCollector implements LoggerAwareInterface
+abstract class MetricCollector implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -41,13 +41,13 @@ abstract class MetricsCollector implements LoggerAwareInterface
     }
 
 
-    public function sendTo(MetricsExporterInterface $exporter)
+    public function sendToStatsdExporter(StatsdExporterClientInterface $statsdExporterClient)
     {
         $this->save();
         foreach ($this->getMetrics() as $metric) {
             $action = key($metric);
             $params = current($metric);
-            call_user_func_array([$exporter, $action], $params);
+            call_user_func_array([$statsdExporterClient, $action], $params);
         }
     }
 
@@ -99,6 +99,12 @@ abstract class MetricsCollector implements LoggerAwareInterface
     final protected function gauge(string $key, int $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['gauge' => [$key, $value, $tags]];
+    }
+
+
+    final protected function summary(string $key, int $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['summary' => [$key, $value, $tags]];
     }
 
 
