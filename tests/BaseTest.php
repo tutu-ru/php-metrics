@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Metrics;
 
 use PHPUnit\Framework\TestCase;
-use TutuRu\Config\ConfigContainer;
-use TutuRu\Tests\Config\JsonConfig\JsonConfigFactory;
+use TutuRu\Config\JsonConfig\MutableJsonConfig;
 
 abstract class BaseTest extends TestCase
 {
-    /** @var ConfigContainer */
+    /** @var MutableJsonConfig */
     protected $config;
 
     public function setUp()
     {
         parent::setUp();
-        $this->config = JsonConfigFactory::createConfig(__DIR__ . '/config/app.json', __DIR__ . '/config/env.json');
+        $this->config = new MutableJsonConfig(__DIR__ . '/config/app.json');
     }
 }

@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\ConfigInterface;
 
 class MetricConfig
 {
-    /** @var ConfigContainer */
+    /** @var ConfigInterface */
     private $config;
 
 
-    public function __construct(ConfigContainer $config)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -19,7 +19,7 @@ class MetricConfig
 
     public function isEnabled(): bool
     {
-        return (bool)$this->config->getValue('metrics.enabled', false);
+        return (bool)$this->config->getValue('metrics.enabled', false, false);
     }
 
 

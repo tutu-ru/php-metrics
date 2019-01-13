@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace TutuRu\Metrics;
 
 use Psr\Log\LoggerInterface;
-use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\ConfigInterface;
 
 class StatsdExporterClientFactory
 {
-    public static function create(ConfigContainer $config, ?LoggerInterface $logger): StatsdExporterClientInterface
+    public static function create(ConfigInterface $config, ?LoggerInterface $logger): StatsdExporterClientInterface
     {
         try {
             $metricConfig = new MetricConfig($config);
@@ -26,11 +26,11 @@ class StatsdExporterClientFactory
     }
 
 
-    private static function getExporterParameters(ConfigContainer $config): StatsdExporterClientParams
+    private static function getExporterParameters(ConfigInterface $config): StatsdExporterClientParams
     {
-        $host = $config->getValue('metrics.statsd_exporter.host', null, true);
-        $port = $config->getValue('metrics.statsd_exporter.port', null, true);
-        $timeout = $config->getValue('metrics.statsd_exporter.timeout', 0);
+        $host = $config->getValue('metrics.statsd_exporter.host', true);
+        $port = $config->getValue('metrics.statsd_exporter.port', true);
+        $timeout = $config->getValue('metrics.statsd_exporter.timeout') ?? 0;
         return new StatsdExporterClientParams((string)$host, (int)$port, (float)$timeout);
     }
 }

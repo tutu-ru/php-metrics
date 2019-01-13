@@ -19,7 +19,7 @@ class StatsdExporterClientFactoryTest extends BaseTest
 
     public function testCreateDisabled()
     {
-        $this->config->setApplicationValue('metrics.enabled', false);
+        $this->config->setValue('metrics.enabled', false);
         $statsdExporterClient = StatsdExporterClientFactory::create($this->config, new TestLogger());
         $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient);
     }
@@ -27,7 +27,7 @@ class StatsdExporterClientFactoryTest extends BaseTest
 
     public function testCreateWithoutConnectionData()
     {
-        $this->config->setApplicationValue('metrics.statsd_exporter', []);
+        $this->config->setValue('metrics.statsd_exporter', []);
         $statsdExporterClient = StatsdExporterClientFactory::create($this->config, new TestLogger());
         $this->assertInstanceOf(NullStatsdExporterClient::class, $statsdExporterClient);
     }

@@ -5,7 +5,7 @@ namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
 
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\InMemory;
-use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\ConfigInterface;
 use TutuRu\Metrics\MetricConfig;
 use TutuRu\Metrics\StatsdExporterClient;
 use TutuRu\Metrics\StatsdExporterClientParams;
@@ -16,7 +16,7 @@ class MemoryMetricExporter extends StatsdExporterClient
     private $lastCreatedConnection;
 
 
-    public function __construct(ConfigContainer $config)
+    public function __construct(ConfigInterface $config)
     {
         $metricsConfig = new MetricConfig($config);
         $fakeUdpMetricsExporterParams = new StatsdExporterClientParams('', 0, 0);

@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
 
-use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\ConfigInterface;
 
 class MemoryMetricExporterFactory
 {
-    public static function create(ConfigContainer $config): MemoryMetricExporter
+    public static function create(ConfigInterface $config): MemoryMetricExporter
     {
         return new MemoryMetricExporter($config);
     }

@@ -5,7 +5,7 @@
 ```php
 use TutuRu\Metrics\StatsdExporterClientFactory;
 
-$statsdExporterClient = StatsdExporterClientFactory::create($configContainer, $psrLogger);
+$statsdExporterClient = StatsdExporterClientFactory::create($config, $psrLogger);
 
 $statsdExporterClient->count('counter', 10);
 $statsdExporterClient->gauge('gauge', 50);
@@ -22,7 +22,7 @@ $statsdExporterClient->save();
 use TutuRu\Metrics\StatsdExporterClientFactory;
 use TutuRu\Metrics\MetricCollector;
 
-$statsdExporterClient = StatsdExporterClientFactory::create($configContainer, $psrLogger);
+$statsdExporterClient = StatsdExporterClientFactory::create($config, $psrLogger);
 
 class MyDataCollector extends MetricCollector
 {
@@ -63,7 +63,7 @@ use TutuRu\Metrics\StatsdExporterClientFactory;
 use TutuRu\Metrics\MetricAwareInterface;
 use TutuRu\Metrics\MetricAwareTrait;
 
-$statsdExporterClient = StatsdExporterClientFactory::create($configContainer, $psrLogger);
+$statsdExporterClient = StatsdExporterClientFactory::create($config, $psrLogger);
 
 class MyObject implements MetricAwareInterface
 {
@@ -95,7 +95,7 @@ class MyTest extends TestCase
 {
     public function testMetrics()
     {
-        $statsdExporterClient = MemoryMetricExporterFactory::create($configContainer);
+        $statsdExporterClient = MemoryMetricExporterFactory::create($config);
 
         $testObject = new TestObject();
         $testObject->setStatsdExporterClient($statsdExporterClient);
