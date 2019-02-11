@@ -3,14 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-
-abstract class MetricCollector implements LoggerAwareInterface
+abstract class MetricCollector
 {
-    use LoggerAwareTrait;
-
-
     private $collectedMetrics = [];
 
     /**
