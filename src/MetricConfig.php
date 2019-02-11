@@ -28,4 +28,22 @@ class MetricConfig
         $appName = $this->config->getValue('project.name') ?? $this->config->getValue('name') ?? 'unknown';
         return (string)$appName;
     }
+
+
+    public function getStatsdExporterHost(): string
+    {
+        return (string)$this->config->getValue('metrics.statsd_exporter.host', true);
+    }
+
+
+    public function getStatsdExporterPort(): int
+    {
+        return (int)$this->config->getValue('metrics.statsd_exporter.port', true);
+    }
+
+
+    public function getStatsdExporterTimeoutSec(): float
+    {
+        return (float)($this->config->getValue('metrics.statsd_exporter.timeout') ?? 0);
+    }
 }

@@ -12,17 +12,25 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     /** @var string */
     private $appName;
 
-    /** @var StatsdExporterClientParams */
-    private $params;
+    /** @var string */
+    private $host;
+
+    /** @var int */
+    private $port;
+
+    /** @var float */
+    private $timeoutSec;
 
     /** @var Client */
     private $statsdClient;
 
 
-    public function __construct(string $appName, StatsdExporterClientParams $params)
+    public function __construct(string $appName, string $host, int $port, float $timeoutSec)
     {
         $this->appName = $appName;
-        $this->params = $params;
+        $this->host = $host;
+        $this->port = $port;
+        $this->timeoutSec = $timeoutSec;
     }
 
 
@@ -78,12 +86,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
     protected function createStatsdConnection(): Connection
     {
-        return new UdpSocket(
-            $this->params->getHost(),
-            $this->params->getPort(),
-            $this->params->getTimeoutInSec(),
-            true
-        );
+        return new UdpSocket($this->host, $this->port, $this->timeoutSec, true);
     }
 
 

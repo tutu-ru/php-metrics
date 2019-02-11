@@ -5,13 +5,13 @@ namespace TutuRu\Tests\Metrics;
 
 use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporterFactory;
 
-class MetricAwareTraitTest extends BaseTest
+class StatsdExporterAwareTraitTest extends BaseTest
 {
     public function testSetMetricsExporter()
     {
         $statsdExporterClient = MemoryMetricExporterFactory::create($this->config);
 
-        $object = new MetricAwareObject();
+        $object = new StatsdExporterAwareObject();
         $this->assertNull($object->getStatsdExporterClient());
 
         $object->setStatsdExporterClient($statsdExporterClient);
