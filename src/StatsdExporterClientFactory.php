@@ -13,7 +13,12 @@ class StatsdExporterClientFactory
         try {
             $metricConfig = new MetricConfig($config);
             if ($metricConfig->isEnabled()) {
-                return new StatsdExporterClient($metricConfig->getAppName(), self::getExporterParameters($config));
+                return new StatsdExporterClient(
+                    $metricConfig->getAppName(),
+                    $metricConfig->getStatsdExporterHost(),
+                    $metricConfig->getStatsdExporterPort(),
+                    $metricConfig->getStatsdExporterTimeoutSec()
+                );
             } else {
                 return new NullStatsdExporterClient();
             }
@@ -23,14 +28,5 @@ class StatsdExporterClientFactory
             }
             return new NullStatsdExporterClient();
         }
-    }
-
-
-    private static function getExporterParameters(ConfigInterface $config): StatsdExporterClientParams
-    {
-        $host = $config->getValue('metrics.statsd_exporter.host', true);
-        $port = $config->getValue('metrics.statsd_exporter.port', true);
-        $timeout = $config->getValue('metrics.statsd_exporter.timeout') ?? 0;
-        return new StatsdExporterClientParams((string)$host, (int)$port, (float)$timeout);
     }
 }

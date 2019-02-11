@@ -60,14 +60,14 @@ $statsdExporterClient->save();
 Пример:
 ```php
 use TutuRu\Metrics\StatsdExporterClientFactory;
-use TutuRu\Metrics\MetricAwareInterface;
-use TutuRu\Metrics\MetricAwareTrait;
+use TutuRu\Metrics\StatsdExporterAwareInterface;
+use TutuRu\Metrics\StatsdExporterAwareTrait;
 
 $statsdExporterClient = StatsdExporterClientFactory::create($config, $psrLogger);
 
-class MyObject implements MetricAwareInterface
+class MyObject implements StatsdExporterAwareInterface
 {
-    use MetricAwareTrait;
+    use StatsdExporterAwareTrait;
 
     public function doSomething()
     {

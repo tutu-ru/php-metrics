@@ -5,7 +5,7 @@ namespace TutuRu\Metrics;
 
 class NullStatsdExporterClient implements StatsdExporterClientInterface
 {
-    public function count(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function count(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this;
     }
@@ -25,12 +25,12 @@ class NullStatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    public function gauge(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function gauge(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this;
     }
 
-    public function summary(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this;
     }

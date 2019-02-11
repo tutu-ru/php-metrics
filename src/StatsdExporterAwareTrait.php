@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-trait MetricAwareTrait
+trait StatsdExporterAwareTrait
 {
     /** @var StatsdExporterClientInterface|null */
     protected $statsdExporterClient;

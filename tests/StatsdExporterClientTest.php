@@ -9,7 +9,6 @@ use TutuRu\Metrics\StatsdExporterClientFactory;
 use TutuRu\Metrics\MetricCollector;
 use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
 use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporter;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporterFactory;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenNameMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenTagsMetricsCollector;
@@ -271,6 +270,6 @@ class StatsdExporterClientTest extends BaseTest
 
     private function getMetricsExporterClient(): MemoryMetricExporter
     {
-        return MemoryMetricExporterFactory::create($this->config);
+        return new MemoryMetricExporter('unittest');
     }
 }

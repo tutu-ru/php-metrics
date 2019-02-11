@@ -12,21 +12,29 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     /** @var string */
     private $appName;
 
-    /** @var StatsdExporterClientParams */
-    private $params;
+    /** @var string */
+    private $host;
+
+    /** @var int */
+    private $port;
+
+    /** @var float */
+    private $timeoutSec;
 
     /** @var Client */
     private $statsdClient;
 
 
-    public function __construct(string $appName, StatsdExporterClientParams $params)
+    public function __construct(string $appName, string $host, int $port, float $timeoutSec)
     {
         $this->appName = $appName;
-        $this->params = $params;
+        $this->host = $host;
+        $this->port = $port;
+        $this->timeoutSec = $timeoutSec;
     }
 
 
-    public function count(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function count(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
@@ -55,14 +63,14 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     }
 
 
-    public function gauge(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function gauge(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
         return $this;
     }
 
 
-    public function summary(string $key, int $value, array $tags = []): StatsdExporterClientInterface
+    public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
@@ -78,12 +86,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
     protected function createStatsdConnection(): Connection
     {
-        return new UdpSocket(
-            $this->params->getHost(),
-            $this->params->getPort(),
-            $this->params->getTimeoutInSec(),
-            true
-        );
+        return new UdpSocket($this->host, $this->port, $this->timeoutSec, true);
     }
 
 

@@ -3,14 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Metrics;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-
-abstract class MetricCollector implements LoggerAwareInterface
+abstract class MetricCollector
 {
-    use LoggerAwareTrait;
-
-
     private $collectedMetrics = [];
 
     /**
@@ -72,7 +66,7 @@ abstract class MetricCollector implements LoggerAwareInterface
     }
 
 
-    final protected function count(string $key, int $value, array $tags = [])
+    final protected function count(string $key, float $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['count' => [$key, $value, $tags]];
     }
@@ -96,13 +90,13 @@ abstract class MetricCollector implements LoggerAwareInterface
     }
 
 
-    final protected function gauge(string $key, int $value, array $tags = [])
+    final protected function gauge(string $key, float $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['gauge' => [$key, $value, $tags]];
     }
 
 
-    final protected function summary(string $key, int $value, array $tags = [])
+    final protected function summary(string $key, float $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['summary' => [$key, $value, $tags]];
     }
