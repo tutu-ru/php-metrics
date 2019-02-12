@@ -7,8 +7,8 @@ use Psr\Log\Test\TestLogger;
 use TutuRu\Metrics\StatsdExporterClient;
 use TutuRu\Metrics\StatsdExporterClientFactory;
 use TutuRu\Metrics\MetricCollector;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporter;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterMetric;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterClient;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenCustomMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenNameMetricsCollector;
 use TutuRu\Tests\Metrics\MetricsCollector\BrokenTagsMetricsCollector;
@@ -259,7 +259,7 @@ class StatsdExporterClientTest extends BaseTest
     }
 
 
-    private function assertMetric(MemoryMetric $metric, $name, $value, $unit, $tags)
+    private function assertMetric(MemoryStatsdExporterMetric $metric, $name, $value, $unit, $tags)
     {
         $this->assertEquals($name, $metric->getName());
         $this->assertEquals($value, $metric->getValue());
@@ -268,8 +268,8 @@ class StatsdExporterClientTest extends BaseTest
     }
 
 
-    private function getMetricsExporterClient(): MemoryMetricExporter
+    private function getMetricsExporterClient(): MemoryStatsdExporterClient
     {
-        return new MemoryMetricExporter('unittest');
+        return new MemoryStatsdExporterClient('unittest');
     }
 }
