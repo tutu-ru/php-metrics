@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
+namespace TutuRu\Tests\Metrics\MemoryStatsdExporter;
 
-class MemoryMetric
+class MemoryStatsdExporterMetric
 {
     /** @var string */
     private $name;

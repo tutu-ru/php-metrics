@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Metrics\MemoryMetricExporter;
+namespace TutuRu\Tests\Metrics\MemoryStatsdExporter;
 
 use Domnikl\Statsd\Connection;
 use Domnikl\Statsd\Connection\InMemory;
 use TutuRu\Metrics\StatsdExporterClient;
 
-class MemoryMetricExporter extends StatsdExporterClient
+class MemoryStatsdExporterClient extends StatsdExporterClient
 {
     /** @var InMemory */
     private $lastCreatedConnection;
@@ -27,13 +27,13 @@ class MemoryMetricExporter extends StatsdExporterClient
 
     /**
      * @param string|null $name
-     * @return MemoryMetric[]
+     * @return MemoryStatsdExporterMetric[]
      */
     public function getExportedMetrics(?string $name = null): array
     {
         $metrics = [];
         foreach ($this->getRawExportedMetrics() as $rawExportedMetric) {
-            $metric = MemoryMetric::createFromRawString($rawExportedMetric);
+            $metric = MemoryStatsdExporterMetric::createFromRawString($rawExportedMetric);
             if (is_null($name) || $name === $metric->getName()) {
                 $metrics[] = $metric;
             }

@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterMetric;
 
-class MemoryMetricTest extends BaseTest
+class MemoryStatsdExporterMetricTest extends BaseTest
 {
     /**
      * @dataProvider rawStringDataProvider
      */
     public function testCreateFromRawString($rawString, $name, $value, $unit, $tags)
     {
-        $metric = MemoryMetric::createFromRawString($rawString);
-        $this->assertInstanceOf(MemoryMetric::class, $metric);
+        $metric = MemoryStatsdExporterMetric::createFromRawString($rawString);
+        $this->assertInstanceOf(MemoryStatsdExporterMetric::class, $metric);
         $this->assertEquals($name, $metric->getName());
         $this->assertEquals($value, $metric->getValue());
         $this->assertEquals($unit, $metric->getUnit());
@@ -73,6 +73,6 @@ class MemoryMetricTest extends BaseTest
     public function testCreateWithUnknownFormat()
     {
         $this->expectException(\Exception::class);
-        MemoryMetric::createFromRawString('metrics_main:500000|ms');
+        MemoryStatsdExporterMetric::createFromRawString('metrics_main:500000|ms');
     }
 }

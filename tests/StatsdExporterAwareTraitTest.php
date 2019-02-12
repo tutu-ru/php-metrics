@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Metrics;
 
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporter;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterClient;
 
 class StatsdExporterAwareTraitTest extends BaseTest
 {
     public function testSetMetricsExporter()
     {
-        $statsdExporterClient = new MemoryMetricExporter("unittest");
+        $statsdExporterClient = new MemoryStatsdExporterClient("unittest");
 
         $object = new StatsdExporterAwareObject();
         $this->assertNull($object->getStatsdExporterClient());

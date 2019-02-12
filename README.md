@@ -89,13 +89,12 @@ $statsdExporterClient->save();
 ```php
 use PHPUnit\Framework\TestCase;
 use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporter;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporterFactory;
 
 class MyTest extends TestCase
 {
     public function testMetrics()
     {
-        $statsdExporterClient = MemoryMetricExporterFactory::create($config);
+        $statsdExporterClient = new MemoryMetricExporter($appName);
 
         $testObject = new TestObject();
         $testObject->setStatsdExporterClient($statsdExporterClient);

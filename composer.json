@@ -18,7 +18,7 @@
   "autoload": {
     "psr-4": {
       "TutuRu\\Metrics\\": "src/",
-      "TutuRu\\Tests\\Metrics\\MemoryMetricExporter\\": "tests/MemoryMetricExporter/"
+      "TutuRu\\Tests\\Metrics\\MemoryStatsdExporter\\": "tests/MemoryStatsdExporter/"
     }
   },
   "autoload-dev": {
