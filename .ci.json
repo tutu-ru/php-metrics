@@ -4,6 +4,6 @@
     ]
   },
   "unittest": {
-    "command": "php vendor/bin/phpunit -c phpunit.xml --coverage-clover /reports/clover.xml --log-junit /reports/phpunit.xml; echo $?; true"
+    "command": "php vendor/bin/phpunit -c phpunit.xml --coverage-html /reports/coverage --log-junit /reports/phpunit.xml; echo $?"
   }
 }
