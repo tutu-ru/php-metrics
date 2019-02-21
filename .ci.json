@@ -4,6 +4,6 @@
     ]
   },
   "unittest": {
-    "command": "php vendor/bin/phpunit -c phpunit.xml --coverage-xml /reports/coverage --log-junit /reports/phpunit.xml; echo $?"
+    "command": "php -d zend.enable_gc=0 vendor/bin/phpunit -c phpunit.xml --coverage-xml /reports/coverage --log-junit /reports/phpunit.xml; echo $?"
   }
 }
