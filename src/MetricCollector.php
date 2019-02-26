@@ -119,6 +119,12 @@ abstract class MetricCollector
     }
 
 
+    public function getTiming(): ?float
+    {
+        return $this->time;
+    }
+
+
     public function addTiming(float $seconds): void
     {
         $this->time = ($this->time ?? 0) + $seconds;

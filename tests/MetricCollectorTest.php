@@ -50,6 +50,41 @@ class MetricCollectorTest extends BaseTest
         );
     }
 
+    public function testGetTiming()
+    {
+        $collector = new SimpleMetricsCollector();
+        $collector->startTiming();
+        usleep(10);
+        $collector->endTiming();
+        $this->assertGreaterThan(0, $collector->getTiming());
+    }
+
+
+    public function testGetTimingIsNullBeforeEndTiming()
+    {
+        $collector = new SimpleMetricsCollector();
+        $this->assertNull($collector->getTiming());
+        $collector->startTiming();
+        $this->assertNull($collector->getTiming());
+    }
+
+
+    public function testGetTimingNotNullAfterAddTiming()
+    {
+        $collector = new SimpleMetricsCollector();
+        $collector->addTiming(100);
+        $this->assertEquals(100, $collector->getTiming());
+    }
+
+
+    public function testGetTimingIsNullAfterStartTiming()
+    {
+        $collector = new SimpleMetricsCollector();
+        $collector->addTiming(100);
+        $collector->startTiming();
+        $this->assertNull($collector->getTiming());
+    }
+
 
     public function testCustomMetrics()
     {
