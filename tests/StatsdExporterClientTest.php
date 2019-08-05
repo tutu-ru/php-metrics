@@ -101,11 +101,15 @@ class StatsdExporterClientTest extends BaseTest
         $exporterClient = $this->getMetricsExporterClient();
         $exporterClient->timing('test', 25);
         $exporterClient->timing('test', 40);
+        $exporterClient->timing('test', 28.99);
+        $exporterClient->timing('test', 0.000003);
         $exporterClient->save();
 
-        $this->assertCount(2, $exporterClient->getExportedMetrics());
+        $this->assertCount(4, $exporterClient->getExportedMetrics());
         $this->assertMetric($exporterClient->getExportedMetrics()[0], 'test', 25000, 'ms', ['app' => 'unittest']);
         $this->assertMetric($exporterClient->getExportedMetrics()[1], 'test', 40000, 'ms', ['app' => 'unittest']);
+        $this->assertMetric($exporterClient->getExportedMetrics()[2], 'test', 28990, 'ms', ['app' => 'unittest']);
+        $this->assertMetric($exporterClient->getExportedMetrics()[3], 'test', 0.003, 'ms', ['app' => 'unittest']);
     }
 
 
@@ -133,7 +137,69 @@ class StatsdExporterClientTest extends BaseTest
         $this->assertMetric($exporterClient->getExportedMetrics()[0], 'gauge', 2, 'g', ['app' => 'unittest']);
         $this->assertMetric($exporterClient->getExportedMetrics()[1], 'gauge', 4, 'g', ['app' => 'unittest']);
     }
+    
+    
+    public function testGaugeServiceLayer()
+    {
+        $exporterClient = $this->getMetricsExporterClient();
+        $exporterClient->gaugeServiceLayer('gauge', 6);
+        $exporterClient->gaugeServiceLayer('gauge', 9);
+        $exporterClient->save();
+        $this->assertCount(4, $exporterClient->getExportedMetrics());
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[0],
+            'gauge_service_layer_gauge_count',
+            1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[1],
+            'gauge',
+            6,
+            'g',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[2],
+            'gauge_service_layer_gauge_count',
+            1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[3],
+            'gauge',
+            9,
+            'g',
+            ['app' => 'unittest']
+        );
+    }
 
+    
+    public function testGaugeInstanceLayer()
+    {
+        $exporterClient = $this->getMetricsExporterClient();
+        $exporterClient->gaugeInstanceLayer('gauge_instance_layer', 2);
+        $exporterClient->gaugeInstanceLayer('gauge_instance_layer', 4);
+        $exporterClient->save();
+        $this->assertCount(2, $exporterClient->getExportedMetrics());
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[0],
+            'gauge_instance_layer',
+            2,
+            'g',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[1],
+            'gauge_instance_layer',
+            4,
+            'g',
+            ['app' => 'unittest']
+        );
+    }
+    
 
     public function testExportCollector()
     {
