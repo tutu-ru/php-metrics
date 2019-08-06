@@ -67,27 +67,15 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
         return $this;
     }
-
-    /**
-     * Метод добавлен для решения проблемы с gauge метриками уровня сервиса.
-     * Проблема в том, что разные значения метрики записываются с разных бэкендов и остаются в их экспортерах.
-     * В итоге в прометее мы видим значения A и B, и не имеем возможности понять, какое из них актуальное.
-     * Дополнительно добавляем к gauge счетчик - "сколько раз я записал этот gauge".
-     * При постоении графиков можно пересечь увеличение счетчика с gauge'м и получить только актуальные значения.
-     */
+    
     public function gaugeServiceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
-        $counterKey = $this->prepareKey($key) . '_service_layer_gauge_count';
+        $counterKey = $key . '_service_layer_gauge_count';
         $this->increment($counterKey, $tags);
 
         return $this->gauge($key, $value, $tags);
     }
-
-    /**
-     * Смысловая добавка для метода gaugeServiceLayer()
-     * Необходимо использовать в том случае, когда нам важно получать метрикку с конкретного инстанса
-     * По сути реализует обычный метод gauge()
-     */
+    
     public function gaugeInstanceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this->gauge($key, $value, $tags);
