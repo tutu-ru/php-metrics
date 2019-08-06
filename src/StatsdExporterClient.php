@@ -37,7 +37,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     public function count(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -45,7 +44,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     public function increment(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -53,7 +51,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     public function decrement(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -62,7 +59,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     {
         $ms = (float)($seconds * 1000);
         $this->statsdClient()->timing($this->prepareKey($key), $ms, $sampleRate = 1, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -70,7 +66,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     public function gauge(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -79,7 +74,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     {
         $counterKey = $key . '_service_layer_gauge_count';
         $this->increment($counterKey, $tags);
-
         return $this->gauge($key, $value, $tags);
     }
 
@@ -93,7 +87,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
-
         return $this;
     }
 
@@ -118,7 +111,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
             $this->statsdClient = new Client($connection);
             $this->statsdClient->startBatch();
         }
-
         return $this->statsdClient;
     }
 
@@ -141,7 +133,6 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         foreach ($tags as $k => $v) {
             $preparedTags[$this->prepareKey($k)] = $v;
         }
-
         return $preparedTags;
     }
 }
