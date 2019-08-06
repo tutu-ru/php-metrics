@@ -24,7 +24,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     /** @var Client */
     private $statsdClient;
 
-    
+
     public function __construct(string $appName, string $host, int $port, float $timeoutSec)
     {
         $this->appName = $appName;
@@ -33,7 +33,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         $this->timeoutSec = $timeoutSec;
     }
 
-    
+
     public function count(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->count($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
@@ -41,7 +41,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    
+
     public function increment(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->increment($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
@@ -49,7 +49,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    
+
     public function decrement(string $key, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->decrement($this->prepareKey($key), $sampleRate = 1, $this->prepareTags($tags));
@@ -57,7 +57,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    
+
     public function timing(string $key, float $seconds, array $tags = []): StatsdExporterClientInterface
     {
         $ms = (float)($seconds * 1000);
@@ -66,15 +66,15 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    
+
     public function gauge(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->gauge($this->prepareKey($key), $value, $this->prepareTags($tags));
 
         return $this;
     }
-    
-    
+
+
     public function gaugeServiceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $counterKey = $key . '_service_layer_gauge_count';
@@ -82,14 +82,14 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
         return $this->gauge($key, $value, $tags);
     }
-    
-    
+
+
     public function gaugeInstanceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this->gauge($key, $value, $tags);
     }
 
-    
+
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
@@ -97,20 +97,20 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
-    
+
     public function save(): void
     {
         $this->statsdClient()->endBatch();
         $this->resetClient();
     }
 
-    
+
     protected function createStatsdConnection(): Connection
     {
         return new UdpSocket($this->host, $this->port, $this->timeoutSec, true);
     }
 
-    
+
     private function statsdClient(): Client
     {
         if (is_null($this->statsdClient)) {
@@ -122,19 +122,19 @@ class StatsdExporterClient implements StatsdExporterClientInterface
         return $this->statsdClient;
     }
 
-    
+
     private function resetClient(): void
     {
         $this->statsdClient = null;
     }
 
-    
+
     private function prepareKey(string $key): string
     {
         return preg_replace('/[^a-zA-Z0-9_]+/', '_', $key);
     }
 
-    
+
     private function prepareTags(array $tags): array
     {
         $preparedTags = ['app' => $this->appName];
