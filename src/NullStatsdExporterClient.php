@@ -30,6 +30,16 @@ class NullStatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
+    public function gaugeInstanceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
+    {
+        return $this;
+    }
+
+    public function gaugeServiceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
+    {
+        return $this;
+    }
+
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         return $this;

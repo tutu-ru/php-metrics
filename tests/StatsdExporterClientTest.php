@@ -137,7 +137,69 @@ class StatsdExporterClientTest extends BaseTest
         $this->assertMetric($exporterClient->getExportedMetrics()[0], 'gauge', 2, 'g', ['app' => 'unittest']);
         $this->assertMetric($exporterClient->getExportedMetrics()[1], 'gauge', 4, 'g', ['app' => 'unittest']);
     }
+    
+    
+    public function testGaugeServiceLayer()
+    {
+        $exporterClient = $this->getMetricsExporterClient();
+        $exporterClient->gaugeServiceLayer('gauge', 6);
+        $exporterClient->gaugeServiceLayer('gauge', 9);
+        $exporterClient->save();
+        $this->assertCount(4, $exporterClient->getExportedMetrics());
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[0],
+            'gauge_service_layer_gauge_count',
+            1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[1],
+            'gauge',
+            6,
+            'g',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[2],
+            'gauge_service_layer_gauge_count',
+            1,
+            'c',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[3],
+            'gauge',
+            9,
+            'g',
+            ['app' => 'unittest']
+        );
+    }
 
+    
+    public function testGaugeInstanceLayer()
+    {
+        $exporterClient = $this->getMetricsExporterClient();
+        $exporterClient->gaugeInstanceLayer('gauge_instance_layer', 2);
+        $exporterClient->gaugeInstanceLayer('gauge_instance_layer', 4);
+        $exporterClient->save();
+        $this->assertCount(2, $exporterClient->getExportedMetrics());
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[0],
+            'gauge_instance_layer',
+            2,
+            'g',
+            ['app' => 'unittest']
+        );
+        $this->assertMetric(
+            $exporterClient->getExportedMetrics()[1],
+            'gauge_instance_layer',
+            4,
+            'g',
+            ['app' => 'unittest']
+        );
+    }
+    
 
     public function testExportCollector()
     {

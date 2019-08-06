@@ -70,6 +70,20 @@ class StatsdExporterClient implements StatsdExporterClientInterface
     }
 
 
+    public function gaugeServiceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
+    {
+        $counterKey = $key . '_service_layer_gauge_count';
+        $this->increment($counterKey, $tags);
+        return $this->gauge($key, $value, $tags);
+    }
+
+
+    public function gaugeInstanceLayer(string $key, float $value, array $tags = []): StatsdExporterClientInterface
+    {
+        return $this->gauge($key, $value, $tags);
+    }
+
+
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
         $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
