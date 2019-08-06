@@ -101,11 +101,15 @@ class StatsdExporterClientTest extends BaseTest
         $exporterClient = $this->getMetricsExporterClient();
         $exporterClient->timing('test', 25);
         $exporterClient->timing('test', 40);
+        $exporterClient->timing('test', 28.99);
+        $exporterClient->timing('test', 0.000003);
         $exporterClient->save();
 
-        $this->assertCount(2, $exporterClient->getExportedMetrics());
+        $this->assertCount(4, $exporterClient->getExportedMetrics());
         $this->assertMetric($exporterClient->getExportedMetrics()[0], 'test', 25000, 'ms', ['app' => 'unittest']);
         $this->assertMetric($exporterClient->getExportedMetrics()[1], 'test', 40000, 'ms', ['app' => 'unittest']);
+        $this->assertMetric($exporterClient->getExportedMetrics()[2], 'test', 28990, 'ms', ['app' => 'unittest']);
+        $this->assertMetric($exporterClient->getExportedMetrics()[3], 'test', 0.003, 'ms', ['app' => 'unittest']);
     }
 
 

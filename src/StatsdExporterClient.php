@@ -57,7 +57,7 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
     public function timing(string $key, float $seconds, array $tags = []): StatsdExporterClientInterface
     {
-        $ms = (int)($seconds * 1000);
+        $ms = (float)($seconds * 1000);
         $this->statsdClient()->timing($this->prepareKey($key), $ms, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
     }

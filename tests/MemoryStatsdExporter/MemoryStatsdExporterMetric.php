@@ -11,7 +11,7 @@ class MemoryStatsdExporterMetric
     /** @var string */
     private $unit;
 
-    /** @var int */
+    /** @var float */
     private $value;
 
     /** @var string[] */
@@ -19,17 +19,17 @@ class MemoryStatsdExporterMetric
 
     public static function createFromRawString(string $rawString): ?self
     {
-        $result = preg_match('/^([a-zA-Z0-9_]+):(-?\d+)\|(\w+)\|\#(.*)$/', $rawString, $m);
+        $result = preg_match('/^([a-zA-Z0-9_]+):(-?\d+(\.\d+)?)\|(\w+)\|\#(.*)$/', $rawString, $m);
         if (!$result) {
             throw new \Exception("Metric in unknown format: {$rawString}");
         }
 
         $metric = new self();
         $metric->name = (string)$m[1];
-        $metric->value = (int)$m[2];
-        $metric->unit = (string)$m[3];
+        $metric->value = (float)$m[2];
+        $metric->unit = (string)$m[4];
         $metric->tags = [];
-        foreach (explode(',', $m[4]) as $rawTag) {
+        foreach (explode(',', $m[5]) as $rawTag) {
             list($key, $value) = explode(':', $rawTag);
             $metric->tags[$key] = $value;
         }
@@ -49,7 +49,7 @@ class MemoryStatsdExporterMetric
     }
 
 
-    public function getValue(): int
+    public function getValue(): float
     {
         return $this->value;
     }
