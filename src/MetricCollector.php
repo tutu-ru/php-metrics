@@ -96,6 +96,18 @@ abstract class MetricCollector
     }
 
 
+    final protected function gaugeServiceLayer(string $key, float $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['gaugeServiceLayer' => [$key, $value, $tags]];
+    }
+
+
+    final protected function gaugeInstanceLayer(string $key, float $value, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['gaugeInstanceLayer' => [$key, $value, $tags]];
+    }
+
+
     final protected function summary(string $key, float $value, array $tags = [])
     {
         $this->collectedMetrics[] = ['summary' => [$key, $value, $tags]];
