@@ -86,8 +86,19 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
+        $value = (float)($value * 1000);
         $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
         return $this;
+    }
+
+    public function histogram(
+        string $key,
+        float $value,
+        string $bucketDimensionSuffix,
+        array $tags = []
+    ): StatsdExporterClientInterface
+    {
+        return $this->timing($key . '_hg_' . $bucketDimensionSuffix, $value, $tags);
     }
 
 
