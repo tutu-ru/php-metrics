@@ -86,8 +86,29 @@ class StatsdExporterClient implements StatsdExporterClientInterface
 
     public function summary(string $key, float $value, array $tags = []): StatsdExporterClientInterface
     {
-        $this->statsdClient()->timing($this->prepareKey($key), $value, $sampleRate = 1, $this->prepareTags($tags));
-        return $this;
+        return $this->timing($key, $value, $tags);
+    }
+
+    /**
+     * Метод для сбора метрики типа - Гистограма
+     * Для корректной работы необходимо в конфиге statsd_exporter завести правило,
+     * по которому будет определеяться тип метрики и набор buckets в которые будут "раскладываться" значения.
+     *
+     * statsd_exporter на совей стороне будет отрезать суффикс '_hg_' . $bucketSetup,
+     * и в Prometheus будут метрики с чистыми именами
+     * 
+     * По умолчанию заведены следующие $bucketSetup:
+     * 'ms' - 0.1мс, 0.5мс, 1мс, 3мс, 5мс, 10мс, 20мс, 30мс, 50мс, 70мс, 100мс, 150мс, 200мс, 300мс, 500мс, 1с, +Inf
+     * 's' - 10мс, 50мс, 100мс, 300мс, 500мс, 1с, 2с, 3с, 5с, 7с, 10с, 15с, 20с, 30с, 50с, +Inf
+     */
+    public function histogram(
+        string $key,
+        float $value,
+        string $bucketSetup,
+        array $tags = []
+    ): StatsdExporterClientInterface
+    {
+        return $this->timing($key . '_hg_' . $bucketSetup, $value, $tags);
     }
 
 
