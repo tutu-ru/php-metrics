@@ -45,6 +45,16 @@ class NullStatsdExporterClient implements StatsdExporterClientInterface
         return $this;
     }
 
+    public function histogram(
+        string $key,
+        float $value,
+        string $bucketSetup,
+        array $tags = []
+    ): StatsdExporterClientInterface
+    {
+        return $this;
+    }
+
     public function save(): void
     {
     }
