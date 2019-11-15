@@ -114,6 +114,12 @@ abstract class MetricCollector
     }
 
 
+    final protected function histogram( string $key, float $value, string $bucketSetup, array $tags = [])
+    {
+        $this->collectedMetrics[] = ['histogram' => [$key, $value, $bucketSetup, $tags]];
+    }
+
+
     public function startTiming(?float $timeSeconds = null): void
     {
         $this->startTime = is_null($timeSeconds) ? microtime(true) : $timeSeconds;
